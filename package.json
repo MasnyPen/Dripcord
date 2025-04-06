@@ -1,5 +1,5 @@
 {
-  "name": "djsutils",
+  "name": "dripcord",
   "version": "0.0.1",
   "description": "",
   "main": "dist/app.js",
@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MasnyPen/DjsUtils.git"
+    "url": "git+https://github.com/MasnyPen/Dripcord.git"
   },
   "author": "MasnyPen",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MasnyPen/DjsUtils/issues"
+    "url": "https://github.com/MasnyPen/Dripcord/issues"
   },
-  "homepage": "https://github.com/MasnyPen/DjsUtils#readme",
+  "homepage": "https://github.com/MasnyPen/Dripcord#readme",
   "dependencies": {
     "discord.js": "^14.18.0"
   },
