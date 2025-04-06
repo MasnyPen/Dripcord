@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "description": "",
   "main": "dist/app.js",
+  "files": ["dist"],
+  "exports": "./dist/app.js",
   "scripts": {
     "clean": "node scripts/clean.js",
     "start": "npm run clean && npm run build && node --no-warnings dist/app.js ",
