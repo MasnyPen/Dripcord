@@ -2,14 +2,16 @@
   "name": "dripcord",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/app.js",
-  "files": ["dist"],
-  "exports": "./dist/app.js",
+  "main": "./dist/exports/esm/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/exports/esm/index.js",
+      "require": "./dist/exports/cjs/index.js"
+    }
+  },
   "scripts": {
     "clean": "node scripts/clean.js",
-    "start": "npm run clean && npm run build && node --no-warnings dist/app.js ",
-    "build": "tsc --build",
-    "dev": "npm run clean && tsc && node --no-warnings dist/app.js --dev",
+    "build": "npm run clean && tsc --build",
     "lint": "npx @biomejs/biome lint --write ./src"
   },
   "repository": {
@@ -26,6 +28,7 @@
     "discord.js": "^14.18.0"
   },
   "devDependencies": {
+    "@types/node": "^22.14.0",
     "typescript": "^5.8.3"
   }
 }
