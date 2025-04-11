@@ -2,7 +2,8 @@
   "name": "dripcord",
   "version": "0.0.1",
   "description": "",
-  "main": "./dist/exports/esm/index.js",
+  "main": "./dist/exports/cjs/index.cjs",
+  "module": "./dist/exports/esm/index.js",
   "exports": {
     ".": {
       "import": "./dist/exports/esm/index.js",
@@ -11,7 +12,7 @@
   },
   "scripts": {
     "clean": "node scripts/clean.js",
-    "build": "npm run clean && tsc --build",
+    "build": "npm run clean && tsc && tsc --project tsconfig.cjs.json",
     "lint": "npx @biomejs/biome lint --write ./src"
   },
   "repository": {
@@ -25,7 +26,10 @@
   },
   "homepage": "https://github.com/MasnyPen/Dripcord#readme",
   "dependencies": {
-    "discord.js": "^14.18.0"
+    "chalk": "^5.4.1",
+    "discord.js": "^14.18.0",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

@@ -58,7 +58,8 @@
         "noVar": "error",
         "useBlockStatements": "off",
         "useCollapsedElseIf": "error",
-        "useConst": "error"
+        "useConst": "error",
+        "useImportType": "off"
       },
       "suspicious": {
         "noAsyncPromiseExecutor": "error",

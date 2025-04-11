@@ -1,3 +1,2 @@
-import DripcordFramework from "../../DripcordFramework.js";
+export { DripcordFramework } from "../../DripcordFramework.js"
 
-export default DripcordFramework;

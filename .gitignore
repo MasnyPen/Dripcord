@@ -1,4 +1,6 @@
 temp/
+package-lock.json
+tests/
 
 # Logs
 logs

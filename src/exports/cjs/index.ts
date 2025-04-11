@@ -1,1 +1,1 @@
-module.exports = require('./src/DripcordFramework');
+module.exports = require('./src/DripcordFramework.js');
