@@ -1,6 +1,8 @@
 import BotClient, { Config, SecretConfig } from "./BotClient.js";
 import { CacheDriver } from "./drivers/cache/CacheDriver.js";
 import { LocalCacheDriver } from "./drivers/cache/LocalDriver.js";
+import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js";
+import { SQLiteDatabaseDriver } from "./drivers/database/SqliteDriver.js";
 import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js";
 
  export class DripcordFramework {
@@ -29,6 +31,7 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
     }
 
     private cache: CacheDriver = new LocalCacheDriver();
+    private database: DatabaseDriver = new SQLiteDatabaseDriver();
 
     private devMode: boolean = process.argv.slice(2).includes("--dev")
 
@@ -57,12 +60,17 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
 
     setCacheDriver(cache: CacheDriver) {
         this.cache = cache;
+        return this;
+    }
+    setDatabaseDriver(database: DatabaseDriver) {
+        this.database = database;
+        return this
     }
 
     public build(): BotClient {
         const logger = createLoggerFromOptions(this.loggerOptions, this.devMode)
         logger.info("DripcordFramework has started!");
-        return new BotClient(this.secretConfig, this.config, logger,this.cache, this.devMode)
+        return new BotClient(this.secretConfig, this.config, logger, this.cache, this.database, this.devMode)
     }
 }
 

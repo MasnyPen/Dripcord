@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from "redis";
-import { CacheDriver } from "./CacheDriver";
+import { CacheDriver } from "./CacheDriver.js";
 
 export class RedisCacheDriver<T = any> extends CacheDriver<T> {
   private client: RedisClientType;
@@ -7,7 +7,7 @@ export class RedisCacheDriver<T = any> extends CacheDriver<T> {
   /**
    * @param options Optional configuration for the Redis client (host, port, etc.).
    */
-  constructor(private options?: any) {
+  constructor(private options?: Record<string, any>) {
     super();
     this.client = createClient(this.options);
   }

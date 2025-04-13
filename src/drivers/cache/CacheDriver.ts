@@ -6,8 +6,6 @@
 export abstract class CacheDriver<T = any> {
     private connected = false;
 
-
-
     /**
      * Establishes a connection to the cache backend.
      * @returns A promise that resolves to true if the connection is successfully established, false otherwise.
@@ -27,7 +25,7 @@ export abstract class CacheDriver<T = any> {
         return this.connected
     }
 
-    public setConnected(connected: boolean) {
+    protected setConnected(connected: boolean) {
       this.connected = connected;
     }
   

@@ -6,25 +6,25 @@ export enum DripcordEvents {
   
 
 export abstract class Event {
-    name: string;
-    once?: boolean;
-    client: BotClient | null = null
+    public name: string;
+    public once?: boolean;
+    private client: BotClient | null = null
 
     constructor(name: Events, once = false) {
         this.name = name;
         this.once = once;
     }
 
-    getClient() {
+    public getClient() {
         return this.client;
     }
-    setClient(client: BotClient) {
+    public setClient(client: BotClient) {
         if (!this.client) {
             this.client = client;
             if (this.once) {
-                client.once(this.name, this.execute)
+                client.once(this.name, this.execute.bind(this))
             } else {
-                client.on(this.name, this.execute)
+                client.on(this.name, this.execute.bind(this))
             }
             
         }

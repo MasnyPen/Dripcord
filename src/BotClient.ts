@@ -4,6 +4,11 @@ import { Logger } from "winston"
 import EventHandler from "./handlers/Event/EventHandler.js"
 import CommandHandler from "./handlers/Commands/CommandHandler.js"
 import { CacheDriver } from "./drivers/cache/CacheDriver.js"
+import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js"
+import { MySQLDatabaseDriver } from "./drivers/database/MysqlDriver.js"
+import { SQLiteDatabaseDriver } from "./drivers/database/SqliteDriver.js"
+import { PgDatabaseDriver } from "./drivers/database/PgDriver.js"
+import { MongoDatabaseDriver } from "./drivers/database/MongoDriver.js"
 
 
 export interface SecretConfig {
@@ -80,11 +85,14 @@ export default class BotClient extends Client implements Bot {
   }
 
   // Cache
-  public getCache(): CacheDriver{
+  public getCache(): CacheDriver {
     return this.cache
   }
 
-  // DATABASES
+  // DATABASE
+  public getDatabase(): DatabaseDriver {
+    return this.database
+  }
 
   // HANDLERS
   private eventHandler: EventHandler | undefined;
@@ -95,7 +103,7 @@ export default class BotClient extends Client implements Bot {
   /**
    * Creates a custom discord client
    */
-  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private cache: CacheDriver, private devMode: boolean) {
+  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private cache: CacheDriver, private database: DatabaseDriver | MongoDatabaseDriver | MySQLDatabaseDriver | SQLiteDatabaseDriver | PgDatabaseDriver , private devMode: boolean) {
     super({
       intents: [
         GatewayIntentBits.Guilds,
@@ -117,6 +125,26 @@ export default class BotClient extends Client implements Bot {
 
     // Modules resolve
     await this.resolveModules()
+
+    // Cache
+    this.logger.info("[CACHE] Connecting to cache...")
+    
+    try {
+      await this.cache.connect()
+      this.logger.info("[CACHE] Cache connected")
+    } catch (err) {
+      this.logger.info("[CACHE] " + err)
+    }
+
+    // Database
+    this.logger.info("[DATABASE] Connecting to database...")
+    
+    try {
+      await this.database.connect()
+      this.logger.info("[DATABASE] Database connected")
+    } catch (err) {
+      this.logger.info("[DATABASE] " + err)
+    }
 
     try {
       await this.login(this.devMode ? this.secretConfig.dev?.TOKEN : this.secretConfig.TOKEN)
@@ -141,17 +169,6 @@ export default class BotClient extends Client implements Bot {
       Resolves Modules
   */
   private async resolveModules() {
-
-    // Cache
-    this.logger.info("[CACHE] Connecting to cache...")
-    
-    try {
-      await this.cache.connect()
-      this.logger.info("[CACHE] Cache connected")
-    } catch (err) {
-      this.logger.info("[CACHE] " + err)
-    }
-    
     
     // EventHandler
     if (this.config.eventsHandler.enabled) {
