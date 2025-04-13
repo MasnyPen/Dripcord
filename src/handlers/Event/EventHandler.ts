@@ -7,11 +7,11 @@ Events
 
 class EventHandler {
   constructor(private client: BotClient, dir: string) {
+    this.client.getLogger().info("[EventHandler] Events loading...")
       this.loadEvents(dir)
   }
 
   async loadEvents(directory: string) {
-    this.client.getLogger().info("[EventHandler] Events loading...")
     const eventsDir = path.join(process.cwd(), directory)
 
     if (!fs.existsSync(eventsDir)) {
@@ -27,15 +27,18 @@ class EventHandler {
       if (fs.statSync(filePath).isDirectory()) {
         this.loadEvents(path.join(eventsDir, file))
       } else if (file.endsWith(".js")) {
-        let event: Event
         try {
-          event = await import(filePath).then(res => res.default)
+          const mod = await import(filePath)
+          const eventClass = mod.default
+        
+          if (!eventClass) this.client.getLogger().error("No default export")
+          const instance = new eventClass()
+          instance.setClient(this.client)
         } catch (err) {
-          this.client.getLogger().error(`Failed to load event at '${filePath}': ${err}`);
+          this.client.getLogger().error(`Failed to load event at '${filePath}': ${err}`)
           continue
-        } finally {
-          new event().setClient(this.client)
         }
+        
       }
     }
     this.client.getLogger().info("[EventHandler] Events loaded!")

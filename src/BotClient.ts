@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits, OAuth2Scopes } from "discord.js"
 import AntyCrash from './utils/antycrash.js'
 import { Logger } from "winston"
 import EventHandler from "./handlers/Event/EventHandler.js"
+import CommandHandler from "./handlers/Commands/CommandHandler.js"
 
 
 export interface SecretConfig {
@@ -10,9 +11,24 @@ export interface SecretConfig {
     CLIENT_SECRET?: string
     PUBLIC_KEY?: string
     REDIRECT_URI?: string
+    dev?: {
+      TOKEN: string,
+      CLIENT_ID: string,
+      GUILD_ID: string
+      CLIENT_SECRET?: string
+      PUBLIC_KEY?: string
+      REDIRECT_URI?: string
+    }
 }
 export interface Config  {
+  dev: {
+    developers: string[]
+  }
   eventsHandler: {
+    dir: string,
+    enabled: boolean
+  },
+  commandHandler: {
     dir: string,
     enabled: boolean
   }
@@ -38,9 +54,13 @@ export interface Bot {
 
 
 export default class BotClient extends Client implements Bot {
-
-  // MODE
-  private devMode: boolean = process.argv.slice(2).includes("--dev")
+  // Dev
+  public isDevMode() {
+    return this.devMode
+  }
+  public getDevs() {
+    return this.config.dev.developers
+  }
 
   // Logger
   public getLogger(): Logger {
@@ -52,11 +72,13 @@ export default class BotClient extends Client implements Bot {
   // HANDLERS
   private eventHandler: EventHandler | undefined;
   public getEventHandler(): EventHandler | undefined { return this.eventHandler}
+  private commandHandler: CommandHandler | undefined
+  private getCommandHandler(): CommandHandler | undefined { return this.commandHandler }
 
   /**
    * Creates a custom discord client
    */
-  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger) {
+  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private devMode: boolean) {
     super({
       intents: [
         GatewayIntentBits.Guilds,
@@ -80,7 +102,7 @@ export default class BotClient extends Client implements Bot {
     await this.resolveModules()
 
     try {
-      await this.login(this.secretConfig.TOKEN)
+      await this.login(this.devMode ? this.secretConfig.dev?.TOKEN : this.secretConfig.TOKEN)
     } catch (err: any) {
       this.getLogger().error("Bot login error:", err)
       this.end(1)
@@ -106,6 +128,11 @@ export default class BotClient extends Client implements Bot {
     // EventHandler
     if (this.config.eventsHandler.enabled) {
       this.eventHandler = new EventHandler(this, this.config.eventsHandler.dir)
+    }
+
+    // CommandHandler
+    if (this.config.commandHandler.enabled) {
+      this.commandHandler = new CommandHandler(this, this.config.commandHandler.dir, this.secretConfig)
     }
   }
 

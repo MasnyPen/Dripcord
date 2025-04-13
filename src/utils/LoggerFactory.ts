@@ -3,6 +3,7 @@ import DailyRotateFile from "winston-daily-rotate-file"
 
 export interface LoggerOptions {
     enabled?: boolean
+    prefix?: string
     level?: "info" | "debug" | "warn" | "error"
     console?: boolean
     file?: boolean
@@ -11,13 +12,14 @@ export interface LoggerOptions {
     maxFiles?: string
   }
 
-export default function createLoggerFromOptions(opts: LoggerOptions): winston.Logger {
+export default function createLoggerFromOptions(opts: LoggerOptions, devMode: boolean): winston.Logger {
     const transports = []
   
     if (opts.console) {
       transports.push(
         new winston.transports.Console({
           format: winston.format.combine(
+            winston.format.label({ label: `[${opts.prefix ?? "Dripcord"}]${ devMode ?? "[DEVMODE]"}`  }),
             winston.format.colorize(),
             winston.format.timestamp(),
             winston.format.printf(({ level, message, timestamp }) => {

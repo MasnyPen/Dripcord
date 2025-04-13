@@ -1,0 +1,201 @@
+import {
+  Collection,
+  REST,
+  Routes,
+  Events,
+  ContextMenuCommandBuilder,
+  Interaction,
+} from "discord.js"
+import path from "path"
+import fs from "fs"
+import { Command } from "./Command.js"
+import BotClient, { SecretConfig } from "../../BotClient.js"
+
+export default class CommandHandler {
+  private cmds: string[] = []
+  private commands: Collection<string, Command> = new Collection()
+  private rest: REST
+  private cmdsPerGuilds: any[] = []
+
+  constructor(
+    private client: BotClient,
+    private commandsPath: string,
+    private options: SecretConfig
+  ) {
+    this.rest = new REST().setToken(this.options.TOKEN)
+    this.registerCommands()
+  }
+
+  private async loadCommands(dir: string): Promise<void> {
+    try {
+      const commandsDir = path.join(process.cwd(), dir)
+
+      if (!fs.existsSync(commandsDir)) {
+        this.client.getLogger().error(`[CommandHandler] Directory '${commandsDir}' does not exist.`)
+        return
+      }
+
+      const files = fs.readdirSync(dir)
+
+      for (const file of files) {
+        const filePath = path.join(commandsDir, file)
+
+        if (fs.statSync(filePath).isDirectory()) {
+          this.loadCommands(path.join(commandsDir, file))
+        } else if (file.endsWith(".js")) {
+          try {
+            const instance = await import(filePath).then(res => res.default)
+            const command: Command = new instance()
+
+            if (!command?.data || typeof command.execute !== "function") {
+              this.client.getLogger().error(`[CommandHandler] Command ${file} is missing 'data' or 'execute'.`)
+              continue
+            }
+
+            if (!command.data.name) {
+              this.client.getLogger().error(`[CommandHandler] Command ${file} has no 'name'.`)
+              continue
+            }
+
+            if (this.commands.has(command.data.name)) {
+              this.client.getLogger().warn(`[CommandHandler] Command '${command.data.name}' is already registered. Skipping.`)
+              continue
+            }
+
+            if (command.devModeCmd && !this.client.isDevMode()) continue
+
+            this.commands.set(command.data.name, command)
+            this.cmds.push(command.data.name)
+
+          } catch (err) {
+            this.client.getLogger().error(`[CommandHandler] Failed to load command: ${file} - ${err}`)
+            continue
+          }
+        }   
+      }
+    } catch (err) {
+      this.client.getLogger().error(`[CommandHandler] Error loading commands: ${err}`)
+    }
+  }
+
+  private async registerCommands(): Promise<void> {
+    await this.loadCommands(this.commandsPath)
+    const cmds = []
+
+    for (const cmd of this.commands.values()) {
+      if (cmd.data && typeof cmd.data.toJSON === "function") {
+        if (!cmd.data.description && !(cmd.data instanceof ContextMenuCommandBuilder)) {
+          cmd.data.setDescription("Brak Opisu")
+        }
+
+        if (cmd.perGuild) {
+          this.cmdsPerGuilds.push(cmd.data.toJSON())
+        } else {
+          cmds.push(cmd.data.toJSON())
+        }
+      } else {
+        this.client.getLogger().error(`[CommandHandler] Invalid JSON for command: ${cmd.data?.name}`)
+      }
+    }
+
+    try {
+      if (!this.client.isDevMode() || !this.options.dev) {
+        this.client.getLogger().info(`[CommandHandler] Registering ${cmds.length + this.cmdsPerGuilds.length} global commands.`)
+
+        const dataGlobal: any = await this.rest.put(
+          Routes.applicationCommands(this.options.CLIENT_ID),
+          { body: cmds }
+        )
+
+        this.client.guilds.cache.forEach(guild => {
+          this.registerCommandsPerGuild(guild.id)
+        })
+
+        this.client.getLogger().info(`[CommandHandler] Global registration complete (${dataGlobal.length + this.cmdsPerGuilds.length} commands).`)
+      } else {
+        this.client.getLogger().info(`[CommandHandler] Registering ${cmds.length + this.cmdsPerGuilds.length} dev commands.`)
+
+        const data: any = await this.rest.put(
+          Routes.applicationGuildCommands(
+            this.options.dev.CLIENT_ID,
+            this.options.dev.GUILD_ID
+          ),
+          { body: [...cmds, ...this.cmdsPerGuilds] }
+        )
+
+        this.client.getLogger().info(`[CommandHandler] Dev registration complete (${data.length} commands).`)
+      }
+    } catch (error) {
+      this.client.getLogger().error(`[CommandHandler] Failed to register commands: ${error}`)
+    } finally {
+      this.listeners()
+    }
+  }
+
+  public async registerCommandsPerGuild(guildId: string) {
+    try {
+      return await this.rest.put(
+        Routes.applicationGuildCommands(this.options.CLIENT_ID, guildId),
+        { body: this.cmdsPerGuilds }
+      )
+    } catch (error) {
+      this.client.getLogger().error(`[CommandHandler] Guild command registration failed for ${guildId}: ${error}`)
+    }
+  }
+
+  public async unregisterCommand(commandId: string) {
+    return await this.rest.delete(Routes.applicationCommand(this.options.CLIENT_ID, commandId))
+  }
+
+  public async unregisterCommandPerGuild(guildId: string, commandId: string) {
+    return await this.rest.delete(Routes.applicationGuildCommand(this.options.CLIENT_ID, guildId, commandId))
+  }
+
+  private listeners(): void {
+    this.client.on(Events.InteractionCreate, async interaction => {
+      this.commandExecute(interaction)
+      this.autocomplete(interaction)
+    })
+  }
+
+  private async commandExecute(interaction: Interaction): Promise<void> {
+    try {
+      if (!interaction.isChatInputCommand() && !interaction.isContextMenuCommand()) return
+
+      const command = this.commands.get(interaction.commandName)
+      if (!command) {
+        this.client.getLogger().warn(`Command '${interaction.commandName}' not found.`)
+        return
+      }
+
+      try {
+        await command.execute(interaction, this.client)
+        if (this.client.isDevMode()) this.client.getLogger().info(`[CommandHandler] ${interaction.user.id} executed command: ${command.data.name}`)
+        
+      } catch (error) {
+        this.client.getLogger().error(`[CommandHandler] Execution error for '${command.data.name}': ${error}`)
+        await interaction.reply({ content: "An error occurred while executing the command.", ephemeral: true })
+      }
+    } catch (err) {
+      this.client.getLogger().error(`[CommandHandler] commandExecute error: ${err}`)
+    }
+  }
+
+  private async autocomplete(interaction: Interaction): Promise<void> {
+    if (!interaction.isAutocomplete()) return
+
+    const command = this.commands.get(interaction.commandName)
+    if (!command) {
+      this.client.getLogger().warn(`Autocomplete command not found: ${interaction.commandName}`)
+      return
+    }
+
+    try {
+      if (command.autoComplete) {
+        await command.autoComplete(interaction, this.client)
+      }
+    } catch (error) {
+      this.client.getLogger().error(`[CommandHandler] Autocomplete error for '${command.data.name}': ${error}`)
+    }
+  }
+}
