@@ -3,6 +3,7 @@ import AntyCrash from './utils/antycrash.js'
 import { Logger } from "winston"
 import EventHandler from "./handlers/Event/EventHandler.js"
 import CommandHandler from "./handlers/Commands/CommandHandler.js"
+import { CacheDriver } from "./drivers/cache/CacheDriver.js"
 
 
 export interface SecretConfig {
@@ -35,11 +36,22 @@ export interface Config  {
 }
 
 export interface Bot {
+
+  // Dev
+  isDevMode(): boolean
+  getDevs(): string[]
+
   // Logger
   getLogger(): Logger
+
+  // CACHE
+  getCache(): CacheDriver | undefined
+
   // DATABASES
 
   // HANDLERS
+  getEventHandler(): EventHandler | undefined
+  getCommandHandler(): CommandHandler | undefined
 
   /**
    * Ends the bot
@@ -67,18 +79,23 @@ export default class BotClient extends Client implements Bot {
     return this.logger;
   }
 
+  // Cache
+  public getCache(): CacheDriver{
+    return this.cache
+  }
+
   // DATABASES
 
   // HANDLERS
   private eventHandler: EventHandler | undefined;
   public getEventHandler(): EventHandler | undefined { return this.eventHandler}
   private commandHandler: CommandHandler | undefined
-  private getCommandHandler(): CommandHandler | undefined { return this.commandHandler }
+  public getCommandHandler(): CommandHandler | undefined { return this.commandHandler }
 
   /**
    * Creates a custom discord client
    */
-  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private devMode: boolean) {
+  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private cache: CacheDriver, private devMode: boolean) {
     super({
       intents: [
         GatewayIntentBits.Guilds,
@@ -124,6 +141,17 @@ export default class BotClient extends Client implements Bot {
       Resolves Modules
   */
   private async resolveModules() {
+
+    // Cache
+    this.logger.info("[CACHE] Connecting to cache...")
+    
+    try {
+      await this.cache.connect()
+      this.logger.info("[CACHE] Cache connected")
+    } catch (err) {
+      this.logger.info("[CACHE] " + err)
+    }
+    
     
     // EventHandler
     if (this.config.eventsHandler.enabled) {

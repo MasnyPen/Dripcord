@@ -28,6 +28,7 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "discord.js": "^14.18.0",
+    "redis": "^4.7.0",
     "winston": "^3.17.0",
     "winston-daily-rotate-file": "^5.0.0"
   },

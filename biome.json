@@ -59,7 +59,7 @@
         "useBlockStatements": "off",
         "useCollapsedElseIf": "error",
         "useConst": "error",
-        "useImportType": "off"
+        "useImportType": "warn"
       },
       "suspicious": {
         "noAsyncPromiseExecutor": "error",
