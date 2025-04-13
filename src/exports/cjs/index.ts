@@ -1,5 +1,6 @@
 module.exports = {
     DripcordFramework: require('./src/DripcordFramework.js'),
+    Bot: require('../../BotClient.js'),
     Event: require('./handlers/Event/Event.js'),
     Command: require('./handlers/Commands/Command.js'),
     CacheDriver: require('./drivers/cache/CacheDriver.js'),

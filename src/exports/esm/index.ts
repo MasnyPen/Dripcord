@@ -1,4 +1,5 @@
 export { DripcordFramework } from "../../DripcordFramework.js"
+export { Bot } from '../../BotClient.js'
 export { Event, DripcordEvents } from "../../handlers/Event/Event.js"
 export { Command } from "../../handlers/Commands/Command.js"
 export { CacheDriver } from "../../drivers/cache/CacheDriver.js"
