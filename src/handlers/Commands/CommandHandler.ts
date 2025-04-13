@@ -47,25 +47,23 @@ export default class CommandHandler {
             const instance = await import(filePath).then(res => res.default)
             const command: Command = new instance()
 
-            if (!command?.data || typeof command.execute !== "function") {
+            if (!command?.getData() || typeof command.execute !== "function") {
               this.client.getLogger().error(`[CommandHandler] Command ${file} is missing 'data' or 'execute'.`)
               continue
             }
 
-            if (!command.data.name) {
+            if (!command.getData().name) {
               this.client.getLogger().error(`[CommandHandler] Command ${file} has no 'name'.`)
               continue
             }
 
-            if (this.commands.has(command.data.name)) {
-              this.client.getLogger().warn(`[CommandHandler] Command '${command.data.name}' is already registered. Skipping.`)
+            if (this.commands.has(command.getData().name)) {
+              this.client.getLogger().warn(`[CommandHandler] Command '${command.getData().name}' is already registered. Skipping.`)
               continue
             }
 
-            if (command.devModeCmd && !this.client.isDevMode()) continue
-
-            this.commands.set(command.data.name, command)
-            this.cmds.push(command.data.name)
+            this.commands.set(command.getData().name, command)
+            this.cmds.push(command.getData().name)
 
           } catch (err) {
             this.client.getLogger().error(`[CommandHandler] Failed to load command: ${file} - ${err}`)
@@ -83,18 +81,18 @@ export default class CommandHandler {
     const cmds = []
 
     for (const cmd of this.commands.values()) {
-      if (cmd.data && typeof cmd.data.toJSON === "function") {
-        if (!cmd.data.description && !(cmd.data instanceof ContextMenuCommandBuilder)) {
-          cmd.data.setDescription("Brak Opisu")
+      if (cmd.getData() && typeof cmd.getData().toJSON === "function") {
+        if (!cmd.getData().description && !(cmd.getData() instanceof ContextMenuCommandBuilder)) {
+          cmd.getData().setDescription("Brak Opisu")
         }
 
-        if (cmd.perGuild) {
-          this.cmdsPerGuilds.push(cmd.data.toJSON())
+        if (cmd.isPerGuild()) {
+          this.cmdsPerGuilds.push(cmd.getData().toJSON())
         } else {
-          cmds.push(cmd.data.toJSON())
+          cmds.push(cmd.getData().toJSON())
         }
       } else {
-        this.client.getLogger().error(`[CommandHandler] Invalid JSON for command: ${cmd.data?.name}`)
+        this.client.getLogger().error(`[CommandHandler] Invalid JSON for command: ${cmd.getData()?.name}`)
       }
     }
 
@@ -170,10 +168,10 @@ export default class CommandHandler {
 
       try {
         await command.execute(interaction, this.client)
-        if (this.client.isDevMode()) this.client.getLogger().info(`[CommandHandler] ${interaction.user.id} executed command: ${command.data.name}`)
+        if (this.client.isDevMode()) this.client.getLogger().info(`[CommandHandler] ${interaction.user.id} executed command: ${command.getData().name}`)
         
       } catch (error) {
-        this.client.getLogger().error(`[CommandHandler] Execution error for '${command.data.name}': ${error}`)
+        this.client.getLogger().error(`[CommandHandler] Execution error for '${command.getData().name}': ${error}`)
         await interaction.reply({ content: "An error occurred while executing the command.", ephemeral: true })
       }
     } catch (err) {
@@ -195,7 +193,7 @@ export default class CommandHandler {
         await command.autoComplete(interaction, this.client)
       }
     } catch (error) {
-      this.client.getLogger().error(`[CommandHandler] Autocomplete error for '${command.data.name}': ${error}`)
+      this.client.getLogger().error(`[CommandHandler] Autocomplete error for '${command.getData().name}': ${error}`)
     }
   }
 }

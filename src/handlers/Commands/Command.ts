@@ -19,12 +19,6 @@ export abstract class Command<
     | SlashCommandOptionsOnlyBuilder
     | ContextMenuCommandBuilder = SlashCommandBuilder
 > {
-  public cooldown?: number
-  public abstract data: T
-  public perGuild?: boolean
-  public devModeCmd?: boolean
-  public devOnly?: boolean
-  public permissions?: PermissionsString[]
 
   private commandCooldowns = new Map<string, Map<string, number>>()
   private interaction!:
@@ -35,7 +29,7 @@ export abstract class Command<
   private client!: BotClient
   getClient() { return this.client}
 
-  constructor() {
+  constructor(private data: T, private perGuild: boolean, private cooldown = 0) {
     const originalExecute = this.execute
     this.execute = async function (
       ...args: [
@@ -60,7 +54,15 @@ export abstract class Command<
     }
   }
 
-  abstract execute(
+  public getData() {
+    return this.data
+  }
+
+  public isPerGuild() {
+    return this.perGuild
+  }
+
+  public abstract execute(
     event:
       | UserContextMenuCommandInteraction
       | MessageContextMenuCommandInteraction
@@ -106,46 +108,5 @@ export abstract class Command<
     }
 
     cooldownMap.set(userId, timeNow + (this.cooldown || 5) * 1000)
-  }
-  /*
-   * Permissions Logic
-   */
-  private async permissionsCommand() {
-    if (this.permissions)
-      if (
-        !this.interaction?.memberPermissions?.has(this.permissions)
-      ) {
-        await this.interaction.reply({
-          content: `No required permissions: ${this.permissions.join(
-            ", "
-          )}`,
-          ephemeral: true,
-        })
-        return true
-      } else {
-        return false
-      }
-  }
-
-  /*
-   * DevOnly Logic
-   */
-  private async devOnlyCommand(): Promise<boolean> {
-    let userId: string
-    if (this.interaction) userId = this.interaction.user.id
-
-    else return true
-    if (
-      this.devOnly &&
-      !this.client.getDevs().find((el: string) => el === userId)
-    ) {
-        this.interaction.reply({
-          content: "Only the bot developer can use this command!",
-          ephemeral: true,
-        })
-      return true
-    } else {
-      return false
-    }
   }
 }
