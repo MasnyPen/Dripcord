@@ -1,28 +1,24 @@
 import { createClient, RedisClientType } from "redis";
 import { CacheDriver } from "./CacheDriver";
 
-export class RedisCacheDriver<T = any> implements CacheDriver<T> {
+export class RedisCacheDriver<T = any> extends CacheDriver<T> {
   private client: RedisClientType;
-  public connected = false;
-
-    isConnected(): boolean {
-        return this.connected
-    }
 
   /**
    * @param options Optional configuration for the Redis client (host, port, etc.).
    */
   constructor(private options?: any) {
+    super();
     this.client = createClient(this.options);
   }
 
   async connect(): Promise<boolean> {
     try {
       await this.client.connect();
-      this.connected = true;
+      this.setConnected(true);
       return true;
     } catch (error) {
-      this.connected = false;
+      this.setConnected(false);
       throw new Error(`Redis connection error: \n${error}`)
     }
   }
@@ -30,7 +26,7 @@ export class RedisCacheDriver<T = any> implements CacheDriver<T> {
   async disconnect(): Promise<boolean> {
     try {
       await this.client.disconnect();
-      this.connected = false;
+      this.setConnected(false);
       return true;
     } catch (error) {
       throw new Error(`Redis disconnect error: \n${error}`)

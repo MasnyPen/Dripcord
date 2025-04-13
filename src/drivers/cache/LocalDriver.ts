@@ -5,22 +5,18 @@ interface CacheEntry<T> {
     expiresAt?: number;
   }
   
-export class LocalCacheDriver<T = any> implements CacheDriver<T> {
+export class LocalCacheDriver<T = any> extends CacheDriver<T> {
     private cache = new Map<string, CacheEntry<T>>();
-    public connected = false;
 
-    isConnected(): boolean {
-        return this.connected
-    }
 
     async connect(): Promise<boolean> {
-        this.connected = true;
+        this.setConnected(true);
         return true;
     }
 
     async disconnect(): Promise<boolean> {
         this.cache.clear();
-        this.connected = false;
+        this.setConnected(false);
         return true;
     }
 
