@@ -3,7 +3,10 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
 
  export class DripcordFramework {
     private config: Config = {
-
+        eventsHandler: {
+            dir: "./events",
+            enabled: false
+        }
     }
 
     private loggerOptions: LoggerOptions = {
@@ -15,7 +18,6 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
         dateRotate: true,
         maxFiles: "14d"
     }
-     static default: any;
 
     constructor(private secretConfig: SecretConfig) {
         console.info("DripcordFramework has started!");
@@ -23,6 +25,11 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
 
     setLogger(options: LoggerOptions) {
         this.loggerOptions = options
+        return this
+    }
+    setEventsHandler(enabled: boolean, dir = "./events") {
+        this.config.eventsHandler.enabled = enabled;
+        this.config.eventsHandler.dir = dir;
         return this
     }
 
