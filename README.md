@@ -19,13 +19,38 @@ npm install dripcord
 ```ts
 import { DripcordFramework, LocalCacheDriver, SQLiteDatabaseDriver } from 'dripcord'
 
-const bot = new DripcordFramework({ TOKEN: "BOT_TOKEN", CLIENT_ID: "BOT_ID"})
+const bot = new DripcordFramework()
     .setDevelopers(["DEV_ID", "DEV_ID2"])
     .setEventsHandler(true, "./events") // Dir is default value
     .setCommandHandler(true, "./commands") // Dir is default value
     .setCacheDriver(new LocalCacheDriver()) // Default value
     .setDatabaseDriver(new SQLiteDatabaseDriver(":memory:")) // Default value
     .build()
+```
+
+---
+
+## ⚙️ Env Configuration
+
+```
+# Production credentials
+TOKEN=your_bot_token_here
+CLIENT_ID=your_bot_client_id_here 
+
+# OPTIONAL
+# Production credentials
+CLIENT_SECRET=your_bot_client_secret_here
+PUBLIC_KEY=your_bot_public_key_here
+REDIRECT_URI=https://yourdomain.com/redirect
+
+# Development credentials
+DEV_TOKEN=your_dev_bot_token_here
+DEV_CLIENT_ID=your_dev_bot_client_id_here
+DEV_CLIENT_SECRET=your_dev_bot_client_secret_here
+DEV_PUBLIC_KEY=your_dev_bot_public_key_here
+DEV_REDIRECT_URI=https://yourdomain.com/dev-redirect
+DEV_GUILD_ID=your_dev_guild_id_here
+
 ```
 
 ---
@@ -39,6 +64,7 @@ const bot = new DripcordFramework({ TOKEN: "BOT_TOKEN", CLIENT_ID: "BOT_ID"})
 ├── events/
 │   └── ready.js
 ├── app.js
+├── .env
 └── ...
 ```
 
@@ -153,5 +179,5 @@ Made with ❤️ by **MasnyPen**
 
 ## 📜 License
 
-[MIT](./LICENSE)
+[APACHE LICENSE 2.0](./LICENSE)
 

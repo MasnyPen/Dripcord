@@ -1,6 +1,6 @@
 {
   "name": "dripcord",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "./dist/exports/cjs/index.cjs",
   "module": "./dist/exports/esm/index.js",
@@ -10,6 +10,15 @@
       "require": "./dist/exports/cjs/index.js"
     }
   },
+  "keywords": [
+    "discord",
+    "api",
+    "bot",
+    "client",
+    "node",
+    "discordapp",
+    "framework"
+  ],
   "scripts": {
     "clean": "node scripts/clean.js",
     "build": "npm run clean && tsc && tsc --project tsconfig.cjs.json",
@@ -28,6 +37,7 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "discord.js": "^14.18.0",
+    "dotenv": "^16.5.0",
     "i18n": "^0.15.1",
     "mysql2": "^3.14.0",
     "redis": "^4.7.0",

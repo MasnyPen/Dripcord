@@ -5,8 +5,6 @@ import EventHandler from "./handlers/Event/EventHandler.js"
 import CommandHandler from "./handlers/Commands/CommandHandler.js"
 import { CacheDriver } from "./drivers/cache/CacheDriver.js"
 import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js"
-import { MySQLDatabaseDriver } from "./drivers/database/MysqlDriver.js"
-import { SQLiteDatabaseDriver } from "./drivers/database/SqliteDriver.js"
 
 
 export interface SecretConfig {

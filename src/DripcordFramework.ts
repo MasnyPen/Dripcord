@@ -4,6 +4,7 @@ import { LocalCacheDriver } from "./drivers/cache/LocalDriver.js";
 import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js";
 import { SQLiteDatabaseDriver } from "./drivers/database/SqliteDriver.js";
 import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js";
+import 'dotenv/config'
 
  export class DripcordFramework {
     private config: Config = {
@@ -18,6 +19,23 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
             dir: "./commands",
             enabled: false
         }
+    }
+    
+    private secretConfig: SecretConfig = {
+        TOKEN: process.env.TOKEN || "",
+        CLIENT_ID: process.env.CLIENT_ID || "",
+        CLIENT_SECRET: process.env.CLIENT_SECRET,
+        PUBLIC_KEY: process.env.PUBLIC_KEY,
+        REDIRECT_URI: process.env.REDIRECT_URI,
+        dev: {
+            TOKEN: process.env.DEV_TOKEN || "",
+            CLIENT_ID: process.env.DEV_CLIENT_ID || "",
+            GUILD_ID: process.env.DEV_GUILD_ID || "",
+            CLIENT_SECRET: process.env.DEV_CLIENT_SECRET,
+            PUBLIC_KEY: process.env.DEV_PUBLIC_KEY,
+            REDIRECT_URI: process.env.DEV_REDIRECT_URI,
+        }
+        
     }
 
     private loggerOptions: LoggerOptions = {
@@ -35,8 +53,6 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
 
     private devMode: boolean = process.argv.slice(2).includes("--dev")
 
-    constructor(private secretConfig: SecretConfig) {
-    }
 
     setLogger(options: LoggerOptions) {
         this.loggerOptions = options
@@ -68,6 +84,11 @@ import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js
     }
 
     public build(): BotClient {
+
+        if (this.secretConfig.TOKEN === "" || this.secretConfig.CLIENT_ID == "") {
+            throw new Error("TOKEN or CLIENT is invalid or missing.")
+        }
+
         const logger = createLoggerFromOptions(this.loggerOptions, this.devMode)
         logger.info("DripcordFramework has started!");
         return new BotClient(this.secretConfig, this.config, logger, this.cache, this.database, this.devMode)
