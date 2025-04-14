@@ -7,8 +7,6 @@ import { CacheDriver } from "./drivers/cache/CacheDriver.js"
 import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js"
 import { MySQLDatabaseDriver } from "./drivers/database/MysqlDriver.js"
 import { SQLiteDatabaseDriver } from "./drivers/database/SqliteDriver.js"
-import { PgDatabaseDriver } from "./drivers/database/PgDriver.js"
-import { MongoDatabaseDriver } from "./drivers/database/MongoDriver.js"
 
 
 export interface SecretConfig {
@@ -103,7 +101,7 @@ export default class BotClient extends Client implements Bot {
   /**
    * Creates a custom discord client
    */
-  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private cache: CacheDriver, private database: DatabaseDriver | MongoDatabaseDriver | MySQLDatabaseDriver | SQLiteDatabaseDriver | PgDatabaseDriver , private devMode: boolean) {
+  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private cache: CacheDriver, private database: DatabaseDriver , private devMode: boolean) {
     super({
       intents: [
         GatewayIntentBits.Guilds,
