@@ -111,21 +111,10 @@ export default class BotClient extends Client implements Bot {
       Resolves Modules
   */
   private async resolveModules() {
-    
+
     // Handlers
     this.eventHandler = new EventHandler(this, this.config.eventsDir)
     this.commandHandler = new CommandHandler(this, this.config.commandsDir, this.secretConfig)
     this.pluginManager = new PluginManager(this)
   }
-
-  // Invite
-  getInvite() {
-    return this.generateInvite({
-      scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
-      permissions: ["Administrator"],
-    })
-  }
-
-  
-
 }

@@ -1,10 +1,10 @@
-import BotClient from "../BotClient.js";
+import {Bot} from "./Bot";
 
 export interface Plugin {
     name: string;
     version: string;
     author: string;
     description?: string;
-    init(client: BotClient): void;
-    shutdown?(client: BotClient): void;
+    init(client: Bot): void;
+    shutdown?(client: Bot): void;
 }

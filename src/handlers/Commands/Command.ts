@@ -9,7 +9,7 @@ import {
   MessageContextMenuCommandInteraction,
   UserContextMenuCommandInteraction,
 } from "discord.js"
-import BotClient from "../../BotClient.js"
+import {Bot} from "../../interfaces/Bot.js";
 
 export abstract class Command<
   T extends
@@ -26,7 +26,7 @@ export abstract class Command<
     | MessageContextMenuCommandInteraction
     | ChatInputCommandInteraction
 
-  private client!: BotClient
+  private client!: Bot
   getClient() { return this.client}
 
   constructor(private data: T, private perGuild: boolean, private cooldown = 0) {
@@ -38,12 +38,12 @@ export abstract class Command<
           | MessageContextMenuCommandInteraction
           | ChatInputCommandInteraction
         ),
-        BotClient
+        Bot
       ]
     ) {
       const event = args[0]
       this.interaction = event
-      const client: BotClient = args[1]
+      const client: Bot = args[1]
       this.client = client
 
       /*
@@ -67,12 +67,12 @@ export abstract class Command<
       | UserContextMenuCommandInteraction
       | MessageContextMenuCommandInteraction
       | ChatInputCommandInteraction,
-    client?: BotClient,
+    client?: Bot,
     args?: string[]
   ): void | Promise<void>
   autoComplete?(
     interaction: AutocompleteInteraction,
-    client?: BotClient
+    client?: Bot
   ): void | Promise<void>
 
   /*

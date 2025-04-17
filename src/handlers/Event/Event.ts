@@ -1,5 +1,5 @@
 import { Events } from "discord.js";
-import BotClient from "../../BotClient";
+import {Bot} from "../../interfaces/Bot.js";
 
 export enum DripcordEvents {
 }
@@ -8,7 +8,7 @@ export enum DripcordEvents {
 export abstract class Event {
     public name: string;
     public once?: boolean;
-    private client: BotClient | null = null
+    private client: Bot | null = null
 
     constructor(name: Events, once = false) {
         this.name = name;
@@ -18,7 +18,7 @@ export abstract class Event {
     public getClient() {
         return this.client;
     }
-    public setClient(client: BotClient) {
+    public setClient(client: Bot) {
         if (!this.client) {
             this.client = client;
             if (this.once) {

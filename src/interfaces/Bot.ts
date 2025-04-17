@@ -3,8 +3,9 @@ import {CacheDriver} from "../drivers/cache/CacheDriver";
 import EventHandler from "../handlers/Event/EventHandler";
 import CommandHandler from "../handlers/Commands/CommandHandler";
 import PluginManager from "../managers/PluginManager";
+import { Client } from 'discord.js'
 
-export interface Bot {
+export interface Bot extends Client {
 
     // Dev
     isDevMode(): boolean
@@ -28,8 +29,5 @@ export interface Bot {
      * end logic saving
      */
     end(code: number): void
-
-    // Invite
-    getInvite(): any
 
 }
