@@ -1,70 +1,13 @@
 import { Client, GatewayIntentBits, OAuth2Scopes } from "discord.js"
-import AntyCrash from './utils/antycrash.js'
+import AntyCrash from './utils/AntyCrash'
 import { Logger } from "winston"
 import EventHandler from "./handlers/Event/EventHandler.js"
 import CommandHandler from "./handlers/Commands/CommandHandler.js"
 import { CacheDriver } from "./drivers/cache/CacheDriver.js"
 import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js"
-
-
-export interface SecretConfig {
-    TOKEN: string
-    CLIENT_ID: string
-    CLIENT_SECRET?: string
-    PUBLIC_KEY?: string
-    REDIRECT_URI?: string
-    dev?: {
-      TOKEN: string,
-      CLIENT_ID: string,
-      GUILD_ID: string
-      CLIENT_SECRET?: string
-      PUBLIC_KEY?: string
-      REDIRECT_URI?: string
-    }
-}
-export interface Config  {
-  dev: {
-    developers: string[]
-  }
-  eventsHandler: {
-    dir: string,
-    enabled: boolean
-  },
-  commandHandler: {
-    dir: string,
-    enabled: boolean
-  }
-}
-
-export interface Bot {
-
-  // Dev
-  isDevMode(): boolean
-  getDevs(): string[]
-
-  // Logger
-  getLogger(): Logger
-
-  // CACHE
-  getCache(): CacheDriver | undefined
-
-  // DATABASES
-
-  // HANDLERS
-  getEventHandler(): EventHandler | undefined
-  getCommandHandler(): CommandHandler | undefined
-
-  /**
-   * Ends the bot
-   * end logic saving
-   */
-  end(code: number): void
-  
-  // Invite
-  getInvite(): any
-
-}
-
+import PluginManager from "./managers/PluginManager.js";
+import { Bot } from './interfaces/Bot.js'
+import {Config, SecretConfig} from "./interfaces/Config.js";
 
 export default class BotClient extends Client implements Bot {
   // Dev
@@ -91,10 +34,12 @@ export default class BotClient extends Client implements Bot {
   }
 
   // HANDLERS
-  private eventHandler: EventHandler | undefined;
-  public getEventHandler(): EventHandler | undefined { return this.eventHandler}
-  private commandHandler: CommandHandler | undefined
-  public getCommandHandler(): CommandHandler | undefined { return this.commandHandler }
+  private eventHandler!: EventHandler;
+  public getEventHandler(): EventHandler { return this.eventHandler}
+  private commandHandler!: CommandHandler
+  public getCommandHandler(): CommandHandler { return this.commandHandler }
+  private pluginManager!: PluginManager
+  public getPluginManager(): PluginManager { return this.pluginManager; }
 
   /**
    * Creates a custom discord client
@@ -124,7 +69,7 @@ export default class BotClient extends Client implements Bot {
 
     // Cache
     this.logger.info("[CACHE] Connecting to cache...")
-    
+
     try {
       await this.cache.connect()
       this.logger.info("[CACHE] Cache connected")
@@ -134,7 +79,7 @@ export default class BotClient extends Client implements Bot {
 
     // Database
     this.logger.info("[DATABASE] Connecting to database...")
-    
+
     try {
       await this.database.connect()
       this.logger.info("[DATABASE] Database connected")
@@ -150,7 +95,7 @@ export default class BotClient extends Client implements Bot {
     } finally {
       this.getLogger().info("Dripcord login to your bot!")
     }
-    
+
   }
 
   /**
@@ -158,6 +103,7 @@ export default class BotClient extends Client implements Bot {
    * end logic saving
    */
   async end(code = 0) {
+    this.pluginManager.shutdown()
     process.exit(code)
   }
 
@@ -166,15 +112,10 @@ export default class BotClient extends Client implements Bot {
   */
   private async resolveModules() {
     
-    // EventHandler
-    if (this.config.eventsHandler.enabled) {
-      this.eventHandler = new EventHandler(this, this.config.eventsHandler.dir)
-    }
-
-    // CommandHandler
-    if (this.config.commandHandler.enabled) {
-      this.commandHandler = new CommandHandler(this, this.config.commandHandler.dir, this.secretConfig)
-    }
+    // Handlers
+    this.eventHandler = new EventHandler(this, this.config.eventsDir)
+    this.commandHandler = new CommandHandler(this, this.config.commandsDir, this.secretConfig)
+    this.pluginManager = new PluginManager(this)
   }
 
   // Invite

@@ -9,7 +9,8 @@ import {
 import path from "path"
 import fs from "fs"
 import { Command } from "./Command.js"
-import BotClient, { SecretConfig } from "../../BotClient.js"
+import BotClient from "../../BotClient.js"
+import {SecretConfig} from "../../interfaces/Config.js";
 
 export default class CommandHandler {
   private cmds: string[] = []
@@ -30,10 +31,7 @@ export default class CommandHandler {
     try {
       const commandsDir = path.join(process.cwd(), dir)
 
-      if (!fs.existsSync(commandsDir)) {
-        this.client.getLogger().error(`[CommandHandler] Directory '${commandsDir}' does not exist.`)
-        return
-      }
+      if (!fs.existsSync(commandsDir)) return
 
       const files = fs.readdirSync(dir)
 

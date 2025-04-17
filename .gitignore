@@ -1,6 +1,7 @@
 temp/
 package-lock.json
 tests/
+.idea/
 
 # Logs
 logs

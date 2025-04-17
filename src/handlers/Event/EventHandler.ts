@@ -8,14 +8,13 @@ Events
 class EventHandler {
   constructor(private client: BotClient, dir: string) {
     this.client.getLogger().info("[EventHandler] Events loading...")
-      this.loadEvents(dir)
+    this.loadEvents(dir)
   }
 
   async loadEvents(directory: string) {
     const eventsDir = path.join(process.cwd(), directory)
 
     if (!fs.existsSync(eventsDir)) {
-        this.client.getLogger().error(`Directory '${directory}' does not exist.`)
         return
     }
 

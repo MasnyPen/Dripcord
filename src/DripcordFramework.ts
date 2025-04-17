@@ -1,26 +1,23 @@
-import BotClient, { Config, SecretConfig } from "./BotClient.js";
+import BotClient from "./BotClient.js";
 import { CacheDriver } from "./drivers/cache/CacheDriver.js";
 import { LocalCacheDriver } from "./drivers/cache/LocalDriver.js";
 import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js";
 import { SQLiteDatabaseDriver } from "./drivers/database/SqliteDriver.js";
 import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js";
 import 'dotenv/config'
+import { Bot } from "./interfaces/Bot.js";
+import { Config, SecretConfig } from  './interfaces/Config.js'
 
- export class DripcordFramework {
+export class DripcordFramework {
     private config: Config = {
         dev: {
             developers: []
         },
-        eventsHandler: {
-            dir: "./events",
-            enabled: false
-        },
-        commandHandler: {
-            dir: "./commands",
-            enabled: false
-        }
+        eventsDir: "./events",
+        commandsDir: "./commands",
+        pluginsDir: "./plugins"
     }
-    
+
     private secretConfig: SecretConfig = {
         TOKEN: process.env.TOKEN || "",
         CLIENT_ID: process.env.CLIENT_ID || "",
@@ -35,7 +32,7 @@ import 'dotenv/config'
             PUBLIC_KEY: process.env.DEV_PUBLIC_KEY,
             REDIRECT_URI: process.env.DEV_REDIRECT_URI,
         }
-        
+
     }
 
     private loggerOptions: LoggerOptions = {
@@ -63,15 +60,17 @@ import 'dotenv/config'
         this.config.dev.developers = developers;
     }
 
-    setEventsHandler(enabled: boolean, dir = "./events") {
-        this.config.eventsHandler.enabled = enabled;
-        this.config.eventsHandler.dir = dir;
-        return this
+    setEventsDir(dir: string) {
+        this.config.eventsDir = dir;
+        return this;
     }
-    setCommandHandler(enabled: boolean, dir = "./commands") {
-        this.config.commandHandler.enabled = enabled;
-        this.config.commandHandler.dir = dir
-        return this
+    setCommandsDir(dir: string) {
+        this.config.commandsDir = dir;
+        return this;
+    }
+    setPluginsDir(dir: string) {
+        this.config.pluginsDir = dir;
+        return this;
     }
 
     setCacheDriver(cache: CacheDriver) {
@@ -80,10 +79,10 @@ import 'dotenv/config'
     }
     setDatabaseDriver(database: DatabaseDriver) {
         this.database = database;
-        return this
+        return this;
     }
 
-    public build(): BotClient {
+    public build(): Bot {
 
         if (this.secretConfig.TOKEN === "" || this.secretConfig.CLIENT_ID == "") {
             throw new Error("TOKEN or CLIENT is invalid or missing.")

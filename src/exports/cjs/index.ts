@@ -1,9 +1,9 @@
 module.exports = {
     DripcordFramework: require('../../DripcordFramework.js'),
-    Bot: require('../../BotClient.js'),
+    Bot: require('../../interfaces/Bot.js'),
     Event: require('../../handlers/Event/Event.js'),
     Command: require('../../handlers/Commands/Command.js'),
-    
+    Plugin: require('../../interfaces/Plugin.js'),
     CacheDriver: require('../../drivers/cache/CacheDriver.js'),
     LocalDriver: require('../../drivers/cache/LocalDriver.js'),
     RedisDriver: require('../../drivers/cache/RedisDriver.js'),

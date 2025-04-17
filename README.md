@@ -10,7 +10,7 @@
 npm install dripcord
 ```
 
-> Requires **Node.js 18+** and **discord.js 14+**
+> Requires **Node.js 20+** and **discord.js 14+**
 
 ---
 
@@ -21,8 +21,6 @@ import { DripcordFramework, LocalCacheDriver, SQLiteDatabaseDriver } from 'dripc
 
 const bot = new DripcordFramework()
     .setDevelopers(["DEV_ID", "DEV_ID2"])
-    .setEventsHandler(true, "./events") // Dir is default value
-    .setCommandHandler(true, "./commands") // Dir is default value
     .setCacheDriver(new LocalCacheDriver()) // Default value
     .setDatabaseDriver(new SQLiteDatabaseDriver(":memory:")) // Default value
     .build()
@@ -63,6 +61,8 @@ DEV_GUILD_ID=your_dev_guild_id_here
 │   └── ping.js
 ├── events/
 │   └── ready.js
+├── plugins/
+│   └── plugin.js
 ├── app.js
 ├── .env
 └── ...
@@ -138,22 +138,29 @@ const user = await bot.getCache().get("user:123");
 
 ---
 
+## 🧹 Plugin System 
+
+Extend Dripcord with plugins to add new features.
+
+```ts
+export default {
+    name: "Example plugin",
+    version: "1.0",
+    author: "Example",
+    init(client) {
+        client.getLogger().info("Plugin loaded!")
+    }
+}
+```
+
+---
+
 ## 🌍 Language Manager (Coming Soon)
 
 Multilingual support is planned through an optional language manager.
 
 ```ts
 bot.getLanguage().t("command.success", { user: "John" });
-```
-
----
-
-## 🧹 Plugin System (Coming Soon)
-
-Extend Dripcord with plugins to add new features.
-
-```ts
-bot.use(new AnalyticsPlugin());
 ```
 
 ---
@@ -171,7 +178,7 @@ Built-in global error handling:
 
 ## 🤝 Author
 
-Made with ❤️ by **MasnyPen**
+**MasnyPen**
 
 ---
 
