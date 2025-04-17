@@ -1,5 +1,5 @@
 import { Client, GatewayIntentBits, OAuth2Scopes } from "discord.js"
-import AntyCrash from './utils/AntyCrash'
+import AntyCrash from './utils/AntyCrash.js'
 import { Logger } from "winston"
 import EventHandler from "./handlers/Event/EventHandler.js"
 import CommandHandler from "./handlers/Commands/CommandHandler.js"
