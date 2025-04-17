@@ -79,7 +79,7 @@ import { Command, SlashCommandBuilder } from "dripcord";
 
 export default class PingCommand extends Command {
   constructor() {
-    super(new SlashCommandBuilder()); // SlashCommandBuilder data
+    super(new SlashCommandBuilder(), true, 5); // SlashCommandBuilder data, perGuild boolean option, cooldown (optional)
   }
 
   async run(interaction) {
@@ -116,8 +116,6 @@ Support for multiple database engines with unified API:
 
 - **SQLite** – `SQLiteDatabaseDriver` (sqlite3)
 - **MySQL** – `MySQLDatabaseDriver` (mysql2)
-- **PostgreSQL** – `PgDatabaseDriver` (pg)
-- **MongoDB** – `MongoDatabaseDriver` (mongoose)
 
 ```ts
 await bot.getDatabase().set("prefix:123", "!");
