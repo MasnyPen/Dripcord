@@ -155,12 +155,14 @@ export default {
 
 ---
 
-## 🌍 Language Manager (Coming Soon)
+## 🌍 i18n Support
 
-Multilingual support is planned through an optional language manager.
+With i18n you can easily manage languages.
 
 ```ts
-bot.getLanguage().t("command.success", { user: "John" });
+import { Translate } from "dripcord";
+
+Translate("command.success", { user: "John" });
 ```
 
 ---

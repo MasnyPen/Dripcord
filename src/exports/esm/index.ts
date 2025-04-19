@@ -4,6 +4,7 @@ export { Bot } from '../../interfaces/Bot.js';
 export { Event, DripcordEvents } from '../../handlers/Event/Event.js';
 export { Command } from '../../handlers/Commands/Command.js';
 export { Plugin } from '../../interfaces/Plugin.js'
+export { i18n, Translate } from '../../utils/i18n.js'
 
 
 export * from 'discord.js';

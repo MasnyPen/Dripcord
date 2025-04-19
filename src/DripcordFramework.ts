@@ -15,7 +15,11 @@ export class DripcordFramework {
         },
         eventsDir: "./events",
         commandsDir: "./commands",
-        pluginsDir: "./plugins"
+        pluginsDir: "./plugins",
+        i18n: {
+            default: "en",
+            locales: ["en"]
+        }
     }
 
     private secretConfig: SecretConfig = {
@@ -80,6 +84,11 @@ export class DripcordFramework {
     setDatabaseDriver(database: DatabaseDriver) {
         this.database = database;
         return this;
+    }
+
+    setI18n(defaultLanguage: string = "en", locales: string[] = ["en"]) {
+        this.config.i18n.default = defaultLanguage;
+        this.config.i18n.locales = locales;
     }
 
     public build(): Bot {

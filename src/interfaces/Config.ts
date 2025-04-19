@@ -20,4 +20,8 @@ export interface Config  {
     eventsDir: string
     commandsDir: string
     pluginsDir: string
+    i18n: {
+        default: string
+        locales: string[]
+    }
 }

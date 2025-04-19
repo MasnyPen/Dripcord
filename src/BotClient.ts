@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, OAuth2Scopes } from "discord.js"
+import { Client, GatewayIntentBits } from "discord.js"
 import AntyCrash from './utils/AntyCrash.js'
 import { Logger } from "winston"
 import EventHandler from "./handlers/Event/EventHandler.js"
@@ -8,6 +8,7 @@ import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js"
 import PluginManager from "./managers/PluginManager.js";
 import { Bot } from './interfaces/Bot.js'
 import {Config, SecretConfig} from "./interfaces/Config.js";
+import {initI18n} from "./utils/i18n";
 
 export default class BotClient extends Client implements Bot {
   // Dev
@@ -63,6 +64,9 @@ export default class BotClient extends Client implements Bot {
     // AntyCrash
     AntyCrash.init(this)
     this.getLogger().info("AntyCrash initialized")
+
+    // i18n
+    initI18n(this, this.config.i18n.default, this.config.i18n.locales)
 
     // Modules resolve
     await this.resolveModules()
