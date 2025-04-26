@@ -26,12 +26,12 @@ export default class BotClient extends Client implements Bot {
 
   // Cache
   public getCache(): CacheDriver {
-    return this.cache
+    return this.config.cache
   }
 
   // DATABASE
   public getDatabase(): DatabaseDriver {
-    return this.database
+    return this.config.database
   }
 
   // HANDLERS
@@ -45,7 +45,7 @@ export default class BotClient extends Client implements Bot {
   /**
    * Creates a custom discord client
    */
-  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger, private cache: CacheDriver, private database: DatabaseDriver , private devMode: boolean) {
+  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger , private devMode: boolean) {
     super({
       intents: [
         GatewayIntentBits.Guilds,
@@ -75,7 +75,7 @@ export default class BotClient extends Client implements Bot {
     this.logger.info("[CACHE] Connecting to cache...")
 
     try {
-      await this.cache.connect()
+      await this.getCache().connect()
       this.logger.info("[CACHE] Cache connected")
     } catch (err) {
       this.logger.info("[CACHE] " + err)
@@ -85,7 +85,7 @@ export default class BotClient extends Client implements Bot {
     this.logger.info("[DATABASE] Connecting to database...")
 
     try {
-      await this.database.connect()
+      await this.getDatabase().connect()
       this.logger.info("[DATABASE] Database connected")
     } catch (err) {
       this.logger.info("[DATABASE] " + err)

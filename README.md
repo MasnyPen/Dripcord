@@ -16,14 +16,8 @@ npm install dripcord
 
 ## 🔧 Getting Started
 
-```ts
-import { DripcordFramework, LocalCacheDriver, SQLiteDatabaseDriver } from 'dripcord'
-
-const bot = new DripcordFramework()
-    .setDevelopers(["DEV_ID", "DEV_ID2"])
-    .setCacheDriver(new LocalCacheDriver()) // Default value
-    .setDatabaseDriver(new SQLiteDatabaseDriver(":memory:")) // Default value
-    .build()
+```bash
+dripcord start
 ```
 
 ---
@@ -53,6 +47,31 @@ DEV_GUILD_ID=your_dev_guild_id_here
 
 ---
 
+## ⚙️ Configuration
+
+```js
+// config.js
+import { LocalCacheDriver, SQLiteDatabaseDriver } from "dripcord";
+
+export default {
+  dev: {
+    developers: []
+  },
+  cache: new LocalCacheDriver(),
+  database: new SQLiteDatabaseDriver(),
+  eventsDir: "./events",
+  commandsDir: "./commands",
+  pluginsDir: "./plugins",
+  i18n: {
+    default: "en",
+    locales: ["en", "pl", "de"]
+  }
+};
+
+```
+
+---
+
 ## 📁 Project Structure
 
 ```
@@ -63,7 +82,7 @@ DEV_GUILD_ID=your_dev_guild_id_here
 │   └── ready.js
 ├── plugins/
 │   └── plugin.js
-├── app.js
+├── config.js
 ├── .env
 └── ...
 ```

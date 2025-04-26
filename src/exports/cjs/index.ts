@@ -1,5 +1,4 @@
 module.exports = {
-    DripcordFramework: require('../../DripcordFramework.js'),
     Bot: require('../../interfaces/Bot.js'),
     Event: require('../../handlers/Event/Event.js'),
     Command: require('../../handlers/Commands/Command.js'),

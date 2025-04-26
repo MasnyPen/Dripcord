@@ -1,3 +1,6 @@
+import {DatabaseDriver} from "../drivers/database/DatabaseDriver";
+import {CacheDriver} from "../drivers/cache/CacheDriver";
+
 export interface SecretConfig {
     TOKEN: string
     CLIENT_ID: string
@@ -17,6 +20,8 @@ export interface Config  {
     dev: {
         developers: string[]
     }
+    cache: CacheDriver
+    database: DatabaseDriver
     eventsDir: string
     commandsDir: string
     pluginsDir: string
