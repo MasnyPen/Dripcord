@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import {DripcordFramework} from "../DripcordFramework.js";
+import {spawn} from "child_process";
 
 const [,, command] = process.argv;
 
@@ -14,7 +15,19 @@ switch (command) {
         new DripcordFramework(false).build()
         break;
     case 'lint':
-        console.info("soon")
+        console.info('🧹 Running Biome linter...');
+        const lintProcess = spawn('npx', ['biome', 'check', '.'], {
+            stdio: 'inherit',
+            shell: true
+        });
+
+        lintProcess.on('close', (code) => {
+            if (code !== 0) {
+                console.error(`❌ Linting failed with code ${code}`);
+            } else {
+                console.info('✅ Linting completed successfully.');
+            }
+        });
         break;
     default:
         console.info(`❓ Unknown command: ${command}`);
