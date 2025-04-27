@@ -11,7 +11,7 @@ export default class ConfigLoader {
     async load(): Promise<Config> {
         try {
             if (!fs.existsSync(this.configPath)) {
-                console.warn("⚠️ config.js not found, creating default template.");
+                console.warn("⚠️  config.js not found, creating default template.");
                 this.writeDefaultConfigFile();
             }
 

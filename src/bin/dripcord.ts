@@ -6,7 +6,8 @@ const [,, command] = process.argv;
 
 switch (command) {
     case 'dev':
-        console.info('🚀 soon');
+        console.info('🚀 Starting dev server...');
+        new DripcordFramework(true).build();
         break;
     case 'start':
         console.info('🔥 Starting server...');
