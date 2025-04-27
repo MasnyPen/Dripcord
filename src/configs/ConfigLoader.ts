@@ -1,7 +1,6 @@
 import { Config } from "../interfaces/Config.js";
 import fs from "fs";
 import path from "path";
-import { pathToFileURL } from "url";
 import {LocalCacheDriver} from "../drivers/cache/LocalDriver.js";
 import {SQLiteDatabaseDriver} from "../drivers/database/SqliteDriver.js";
 
