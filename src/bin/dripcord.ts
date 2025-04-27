@@ -103,7 +103,7 @@ export default class ClientEvent extends Event {
 
             fs.writeFileSync(path.join(projectRoot, '.env'),
                 `TOKEN=your-bot-token-here
-                       CLIENT_ID=client-id-here
+CLIENT_ID=client-id-here
                 `);
 
             fs.writeFileSync(path.join(projectRoot, 'biome.json'),
