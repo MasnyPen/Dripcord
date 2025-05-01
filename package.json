@@ -1,6 +1,6 @@
 {
   "name": "dripcord",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "",
   "bin": {
     "dripcord": "./dist/bin/dripcord.js"
