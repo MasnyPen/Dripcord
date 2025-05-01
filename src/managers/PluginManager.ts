@@ -2,12 +2,13 @@ import BotClient from "../BotClient.js";
 import path from "path";
 import fs from "fs";
 import { Plugin } from '../interfaces/Plugin.js'
+import {Logger} from "../utils/Logger";
 
 export default class PluginManager {
     private plugins: Plugin[] = []
 
     constructor(private client: BotClient, dir: string = "./plugins") {
-        this.client.getLogger().info("[PluginManager] Plugins loading...")
+        Logger.info("[PluginManager] Plugins loading...")
         this.loadPlugins(dir).then(() => {
             this.initPlugins()
         });
@@ -31,22 +32,22 @@ export default class PluginManager {
                 try {
                     const plugin: Plugin = await import(filePath).then(res => res.default)
 
-                    if (!plugin) this.client.getLogger().error("No default export")
+                    if (!plugin) Logger.error("No default export")
                     this.plugins.push(plugin)
                 } catch (err) {
-                    this.client.getLogger().error(`Failed to load plugin at '${filePath}': ${err}`)
+                    Logger.error(`Failed to load plugin at '${filePath}': ${err}`)
                     continue
                 }
 
             }
         }
-        this.client.getLogger().info("[PluginManager] Plugins loaded!")
+        Logger.info("[PluginManager] Plugins loaded!")
     }
 
     public initPlugins() {
         for (const plugin of this.plugins) {
             plugin.init(this.client)
-            this.client.getLogger().info(`[PluginManager] [${plugin.name}] Loaded plugin. Version: ${plugin.version} Author: ${plugin.author}`)
+            Logger.info(`[PluginManager] [${plugin.name}] Loaded plugin. Version: ${plugin.version} Author: ${plugin.author}`)
         }
     }
     public shutdown() {

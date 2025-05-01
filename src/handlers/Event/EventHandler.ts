@@ -1,13 +1,11 @@
 import path from "path"
 import fs from "fs"
 import BotClient from "../../BotClient.js"
-import { Events } from "discord.js";
-import { Event } from "./Event.js";
-Events
+import {Logger} from "../../utils/Logger.js";
 
 class EventHandler {
   constructor(private client: BotClient, dir: string) {
-    this.client.getLogger().info("[EventHandler] Events loading...")
+    Logger.info("[EventHandler] Events loading...")
     this.loadEvents(dir)
   }
 
@@ -30,17 +28,17 @@ class EventHandler {
           const mod = await import(filePath)
           const eventClass = mod.default
         
-          if (!eventClass) this.client.getLogger().error("No default export")
+          if (!eventClass) Logger.error("No default export")
           const instance = new eventClass()
           instance.setClient(this.client)
         } catch (err) {
-          this.client.getLogger().error(`Failed to load event at '${filePath}': ${err}`)
+          Logger.error(`Failed to load event at '${filePath}': ${err}`)
           continue
         }
         
       }
     }
-    this.client.getLogger().info("[EventHandler] Events loaded!")
+    Logger.info("[EventHandler] Events loaded!")
   }
 }
 

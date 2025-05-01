@@ -1,5 +1,4 @@
 import {
-  PermissionsString,
   SlashCommandBuilder,
   ContextMenuCommandBuilder,
   SlashCommandOptionsOnlyBuilder,

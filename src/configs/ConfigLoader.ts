@@ -18,7 +18,7 @@ export default class ConfigLoader {
             const config: Config = module.default;
             return config;
         } catch (error) {
-            console.error("❌ Failed to load config.js:", error);
+            console.error("❌  Failed to load config.js:", error);
             this.writeDefaultConfigFile();
             return this.defaultLoad();
         }
@@ -41,15 +41,19 @@ export default {
   i18n: {
     default: "en",
     locales: ["en"]
+  },
+  shards: { 
+    enabled: false, 
+    totalShards: "auto"
   }
 };
         `.trim();
 
         try {
             fs.writeFileSync(this.configPath, configTemplate, "utf-8");
-            console.log("✅ Created default config.js template.");
+            console.log("✅  Created default config.js template.");
         } catch (error) {
-            console.error("❌ Failed to write config.js:", error);
+            console.error("❌  Failed to write config.js:", error);
         }
     }
 
@@ -66,6 +70,10 @@ export default {
             i18n: {
                 default: "en",
                 locales: ["en"]
+            },
+            shards: {
+              enabled: false,
+              totalShards: "auto"
             }
         };
     }

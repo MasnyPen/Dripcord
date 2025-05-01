@@ -1,5 +1,6 @@
 import i18n from 'i18n';
 import {Bot} from "../interfaces/Bot";
+import {Logger} from "./Logger";
 
 export function initI18n(client: Bot, defaultLanguage: string = "en", locales: string[] = ["en"]) {
     i18n.configure({
@@ -9,8 +10,8 @@ export function initI18n(client: Bot, defaultLanguage: string = "en", locales: s
         retryInDefaultLocale: true,
         objectNotation: true,
         register: global,
-        logWarnFn: client.getLogger().warn,
-        logErrorFn: client.getLogger().error,
+        logWarnFn: Logger.warn,
+        logErrorFn: Logger.error,
         missingKeyFn: (_locale, value) => {
             return value;
         },
@@ -20,7 +21,7 @@ export function initI18n(client: Bot, defaultLanguage: string = "en", locales: s
         },
     });
 
-    client.getLogger().info('I18n has been initialized');
+    Logger.info('I18n has been initialized');
 }
 
 export { i18n };

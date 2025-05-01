@@ -1,11 +1,10 @@
 export { Bot } from '../../interfaces/Bot.js';
+export { initShard } from '../../BotClient.js'
 export { Event, DripcordEvents } from '../../handlers/Event/Event.js';
 export { Command } from '../../handlers/Commands/Command.js';
 export { Plugin } from '../../interfaces/Plugin.js'
 export { i18n, Translate } from '../../utils/i18n.js'
-
-
-export * from 'discord.js';
+export { Logger } from "../../utils/Logger.js"
 
 export { CacheDriver } from "../../drivers/cache/CacheDriver.js"
 export { LocalCacheDriver } from "../../drivers/cache/LocalDriver.js"

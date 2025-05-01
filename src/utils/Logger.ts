@@ -10,9 +10,11 @@ export interface LoggerOptions {
     filePath?: string
     dateRotate?: boolean
     maxFiles?: string
-  }
+}
 
-export default function createLoggerFromOptions(opts: LoggerOptions, devMode: boolean): winston.Logger {
+export let Logger: winston.Logger
+
+export function initLogger(opts: LoggerOptions, devMode: boolean) {
     const transports = []
   
     if (opts.console) {
@@ -43,9 +45,11 @@ export default function createLoggerFromOptions(opts: LoggerOptions, devMode: bo
       )
     }
   
-    return winston.createLogger({
+    Logger = winston.createLogger({
       level: opts.level || "info",
       transports,
     })
-  }
+    return
+}
+
   

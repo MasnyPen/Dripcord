@@ -1,55 +1,69 @@
 import BotClient from "./BotClient.js";
-import createLoggerFromOptions, { LoggerOptions } from "./utils/LoggerFactory.js";
-import 'dotenv/config'
-import { SecretConfig } from  './interfaces/Config.js'
+import {initLogger, Logger} from "./utils/Logger.js";
 import ConfigLoader from "./configs/ConfigLoader.js";
+import {ShardingManager} from "discord.js";
+import {Bot} from "./interfaces/Bot.js";
+import 'dotenv/config'
+import { resolve } from 'path'
 
 export class DripcordFramework {
+    private client: Bot | undefined
+    private manager: ShardingManager | undefined
     private ConfigLoader = new ConfigLoader()
 
-    private secretConfig: SecretConfig = {
-        TOKEN: process.env.TOKEN || "",
-        CLIENT_ID: process.env.CLIENT_ID || "",
-        CLIENT_SECRET: process.env.CLIENT_SECRET,
-        PUBLIC_KEY: process.env.PUBLIC_KEY,
-        REDIRECT_URI: process.env.REDIRECT_URI,
-        dev: {
-            TOKEN: process.env.DEV_TOKEN || "",
-            CLIENT_ID: process.env.DEV_CLIENT_ID || "",
-            GUILD_ID: process.env.DEV_GUILD_ID || "",
-            CLIENT_SECRET: process.env.DEV_CLIENT_SECRET,
-            PUBLIC_KEY: process.env.DEV_PUBLIC_KEY,
-            REDIRECT_URI: process.env.DEV_REDIRECT_URI,
-        }
-
+    public isClient() {
+        return this.client;
     }
 
-    private loggerOptions: LoggerOptions = {
-        enabled: true,
-        level: "info",
-        console: true,
-        file: true,
-        filePath: "./logs",
-        dateRotate: true,
-        maxFiles: "14d"
+    public getClient() {
+        return this.client;
+    }
+
+    public isManager() {
+        return this.manager;
+    }
+    public getManager() {
+        return this.manager;
     }
 
     constructor(private devMode: boolean) {
+        initLogger({
+            enabled: true,
+            level: "info",
+            console: true,
+            file: true,
+            filePath: "./logs",
+            dateRotate: true,
+            maxFiles: "14d"
+        }, this.devMode)
+        this.start()
     }
-
-
-    public async build() {
-
-        if (this.secretConfig.TOKEN === "" || this.secretConfig.CLIENT_ID == "") {
-            throw new Error("TOKEN or CLIENT is invalid or missing.")
-        }
-
+    private async start() {
         const config = await this.ConfigLoader.load()
 
-        const logger = createLoggerFromOptions(this.loggerOptions, this.devMode)
-        logger.info("DripcordFramework has started!");
-        new BotClient(this.secretConfig, config, logger, this.devMode)
-        return
+        if (config.shards.enabled && !this.devMode) {
+            this.manager = new ShardingManager(resolve('shard.js'), {
+                respawn: true,
+                token: process.env.TOKEN,
+                totalShards: 'auto',
+                shardList: 'auto',
+            })
+            await this.managerSetup()
+        } else {
+            this.client = new BotClient(this.devMode)
+        }
+    }
+
+    private async managerSetup() {
+        this.manager!.on('shardCreate', shard => {
+            shard.on('ready', () => {
+                Logger.info(`[CLIENT] Shard ${shard.id} connected to Discord's Gateway.`);
+            });
+        });
+
+        await this.manager!.spawn();
+
+        Logger.info(`[CLIENT] ${this.manager!.totalShards} shard(s) spawned.`);
     }
 }
 

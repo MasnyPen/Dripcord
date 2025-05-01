@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits } from "discord.js"
 import AntyCrash from './utils/AntyCrash.js'
-import { Logger } from "winston"
+import {initLogger, Logger} from "./utils/Logger.js"
 import EventHandler from "./handlers/Event/EventHandler.js"
 import CommandHandler from "./handlers/Commands/CommandHandler.js"
 import { CacheDriver } from "./drivers/cache/CacheDriver.js"
@@ -8,7 +8,9 @@ import { DatabaseDriver } from "./drivers/database/DatabaseDriver.js"
 import PluginManager from "./managers/PluginManager.js";
 import { Bot } from './interfaces/Bot.js'
 import {Config, SecretConfig} from "./interfaces/Config.js";
-import {initI18n} from "./utils/i18n";
+import {initI18n} from "./utils/i18n.js";
+import ConfigLoader from "./configs/ConfigLoader.js";
+
 
 export default class BotClient extends Client implements Bot {
   // Dev
@@ -17,11 +19,6 @@ export default class BotClient extends Client implements Bot {
   }
   public getDevs() {
     return this.config.dev.developers
-  }
-
-  // Logger
-  public getLogger(): Logger {
-    return this.logger;
   }
 
   // Cache
@@ -42,10 +39,34 @@ export default class BotClient extends Client implements Bot {
   private pluginManager!: PluginManager
   public getPluginManager(): PluginManager { return this.pluginManager; }
 
+  // Secret Config
+  private secretConfig: SecretConfig = {
+    TOKEN: process.env.TOKEN || "",
+    CLIENT_ID: process.env.CLIENT_ID || "",
+    CLIENT_SECRET: process.env.CLIENT_SECRET,
+    PUBLIC_KEY: process.env.PUBLIC_KEY,
+    REDIRECT_URI: process.env.REDIRECT_URI,
+    dev: {
+      TOKEN: process.env.DEV_TOKEN || "",
+      CLIENT_ID: process.env.DEV_CLIENT_ID || "",
+      GUILD_ID: process.env.DEV_GUILD_ID || "",
+      CLIENT_SECRET: process.env.DEV_CLIENT_SECRET,
+      PUBLIC_KEY: process.env.DEV_PUBLIC_KEY,
+      REDIRECT_URI: process.env.DEV_REDIRECT_URI,
+    }
+
+  }
+
+  // Config
+  private config!: Config
+  private ConfigLoader = new ConfigLoader()
+
+
+
   /**
    * Creates a custom discord client
    */
-  constructor(private secretConfig: SecretConfig, private config: Config, private logger: Logger , private devMode: boolean) {
+  constructor(private devMode: boolean = false) {
     super({
       intents: [
         GatewayIntentBits.Guilds,
@@ -54,16 +75,27 @@ export default class BotClient extends Client implements Bot {
         GatewayIntentBits.GuildMembers,
       ],
     })
+
     this.start()
+    process.on("exit", () => this.end())
   }
 
   /**
    * Starts the bot
    */
   private async start() {
+
+    if (this.secretConfig.TOKEN === "" || this.secretConfig.CLIENT_ID == "") {
+      throw new Error("TOKEN or CLIENT is invalid or missing.")
+    }
+
+    this.config = await this.ConfigLoader.load()
+
+    Logger.info("DripcordFramework has started!");
+
     // AntyCrash
-    AntyCrash.init(this)
-    this.getLogger().info("AntyCrash initialized")
+    AntyCrash.init()
+    Logger.info("AntyCrash initialized")
 
     // i18n
     initI18n(this, this.config.i18n.default, this.config.i18n.locales)
@@ -72,32 +104,32 @@ export default class BotClient extends Client implements Bot {
     await this.resolveModules()
 
     // Cache
-    this.logger.info("[CACHE] Connecting to cache...")
+    Logger.info("[CACHE] Connecting to cache...")
 
     try {
       await this.getCache().connect()
-      this.logger.info("[CACHE] Cache connected")
+      Logger.info("[CACHE] Cache connected")
     } catch (err) {
-      this.logger.info("[CACHE] " + err)
+      Logger.info("[CACHE] " + err)
     }
 
     // Database
-    this.logger.info("[DATABASE] Connecting to database...")
+    Logger.info("[DATABASE] Connecting to database...")
 
     try {
       await this.getDatabase().connect()
-      this.logger.info("[DATABASE] Database connected")
+      Logger.info("[DATABASE] Database connected")
     } catch (err) {
-      this.logger.info("[DATABASE] " + err)
+      Logger.info("[DATABASE] " + err)
     }
 
     try {
       await this.login(this.devMode ? this.secretConfig.dev?.TOKEN : this.secretConfig.TOKEN)
     } catch (err: any) {
-      this.getLogger().error("Bot login error:", err)
+      Logger.error("Bot login error:", err)
       this.end(1)
     } finally {
-      this.getLogger().info("Dripcord login to your bot!")
+      Logger.info("Dripcord login to your bot!")
     }
 
   }
@@ -121,4 +153,17 @@ export default class BotClient extends Client implements Bot {
     this.commandHandler = new CommandHandler(this, this.config.commandsDir, this.secretConfig)
     this.pluginManager = new PluginManager(this)
   }
+}
+
+export function initShard() {
+  initLogger({
+    enabled: true,
+    level: "info",
+    console: true,
+    file: true,
+    filePath: "./logs",
+    dateRotate: true,
+    maxFiles: "14d"
+  }, false)
+  new BotClient()
 }

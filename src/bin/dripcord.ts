@@ -12,11 +12,11 @@ async function main() {
     switch (command) {
         case 'dev':
             console.info('🚀 Starting dev server...');
-            new DripcordFramework(true).build();
+            new DripcordFramework(true)
             break;
         case 'start':
             console.info('🔥 Starting server...');
-            new DripcordFramework(false).build()
+            new DripcordFramework(false)
             break;
         case 'lint':
             console.info('🧹 Running Biome linter...');
@@ -44,6 +44,12 @@ async function main() {
                     message: "🧠 Language:",
                     choices: ["TypeScript", "JavaScript"],
                     default: "TypeScript"
+                },
+                {
+                    type: "confirm",
+                    name: "useSharding",
+                    message: "🧩 Enable sharding?",
+                    default: false
                 }
             ]);
 
@@ -89,17 +95,27 @@ export default class ClientEvent extends Event {
 
 
             fs.writeFileSync(path.join(projectRoot, 'config.js'),
-                `import { LocalCacheDriver, SQLiteDatabaseDriver } from "dripcord";
-    
-    export default {
-      dev: { developers: [] },
-      cache: new LocalCacheDriver(),
-      database: new SQLiteDatabaseDriver(),
-      eventsDir: "./src/events",
-      commandsDir: "./src/commands",
-      pluginsDir: "./src/plugins",
-      i18n: { default: "en", locales: ["en"] }
-    };`);
+                `// Auto-generated config.js
+import { LocalCacheDriver, SQLiteDatabaseDriver } from "dripcord";
+
+export default {
+  dev: {
+    developers: []
+  },
+  cache: new LocalCacheDriver(),
+  database: new SQLiteDatabaseDriver(),
+  eventsDir: "./events",
+  commandsDir: "./commands",
+  pluginsDir: "./plugins",
+  i18n: {
+    default: "en",
+    locales: ["en"]
+  },
+  shards: { 
+    enabled: ${answers.useSharding}, 
+    totalShards: "auto"
+  }
+};`);
 
             fs.writeFileSync(path.join(projectRoot, '.env'),
                 `TOKEN=your-bot-token-here
@@ -127,6 +143,11 @@ CLIENT_ID=client-id-here
       }
     }`);
             }
+            if (answers.useSharding) {
+                fs.writeFileSync(path.join(projectRoot, 'shard.js'),
+                    `import { initShard } from 'dripcord'
+initShard()`)
+            }
 
             console.info(chalk.yellow('📦 Running npm init...'));
             spawn('npm', ['init', '-y'], {cwd: projectRoot, stdio: 'inherit', shell: true});
@@ -134,7 +155,7 @@ CLIENT_ID=client-id-here
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             console.info(chalk.yellow('📦 Installing dependencies...'));
-            spawn('npm', ['install', 'dripcord'], {cwd: projectRoot, stdio: 'inherit', shell: true});
+            spawn('npm', ['install', 'dripcord', 'discord.js'], {cwd: projectRoot, stdio: 'inherit', shell: true});
 
             const devDeps = ['@biomejs/biome'];
             if (useTS) devDeps.push('typescript');

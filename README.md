@@ -7,7 +7,7 @@
 ## 🚀 Installation
 
 ```bash
-npm install dripcord
+npm i -g dripcord
 ```
 
 > Requires **Node.js 20+** and **discord.js 14+**
@@ -17,7 +17,7 @@ npm install dripcord
 ## 🔧 Getting Started
 
 ```bash
-dripcord start
+dripcord init
 ```
 
 ---
@@ -65,6 +65,10 @@ export default {
   i18n: {
     default: "en",
     locales: ["en", "pl", "de"]
+  }, 
+  shards: {
+      enabled: false,
+      totalShards: "auto"
   }
 };
 
@@ -83,6 +87,7 @@ export default {
 ├── plugins/
 │   └── plugin.js
 ├── config.js
+├── shard.js - if you use sharding
 ├── .env
 └── ...
 ```
@@ -125,6 +130,19 @@ export default class ReadyEvent extends Event {
     client.getLogger().info("Bot is ready!");
   }
 }
+```
+
+---
+
+## ⚖️ Sharding
+
+Dripcord natively supports sharding through discord.js’s ShardingManager. 
+<br>When enabled, it allows your bot to scale horizontally across multiple processes
+
+```js
+// shard.js
+import { initShard } from 'dripcord'
+initShard()
 ```
 
 ---

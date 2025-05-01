@@ -29,4 +29,8 @@ export interface Config  {
         default: string
         locales: string[]
     }
+    shards: {
+        enabled: boolean
+        totalShards: string | number
+    }
 }

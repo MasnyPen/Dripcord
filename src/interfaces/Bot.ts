@@ -1,4 +1,3 @@
-import {Logger} from "winston";
 import {CacheDriver} from "../drivers/cache/CacheDriver";
 import EventHandler from "../handlers/Event/EventHandler";
 import CommandHandler from "../handlers/Commands/CommandHandler";
@@ -10,9 +9,6 @@ export interface Bot extends Client {
     // Dev
     isDevMode(): boolean
     getDevs(): string[]
-
-    // Logger
-    getLogger(): Logger
 
     // CACHE
     getCache(): CacheDriver

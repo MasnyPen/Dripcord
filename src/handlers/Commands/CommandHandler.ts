@@ -11,6 +11,7 @@ import fs from "fs"
 import { Command } from "./Command.js"
 import BotClient from "../../BotClient.js"
 import {SecretConfig} from "../../interfaces/Config.js";
+import {Logger} from "../../utils/Logger";
 
 export default class CommandHandler {
   private cmds: string[] = []
@@ -46,17 +47,17 @@ export default class CommandHandler {
             const command: Command = new instance()
 
             if (!command?.getData() || typeof command.execute !== "function") {
-              this.client.getLogger().error(`[CommandHandler] Command ${file} is missing 'data' or 'execute'.`)
+              Logger.error(`[CommandHandler] Command ${file} is missing 'data' or 'execute'.`)
               continue
             }
 
             if (!command.getData().name) {
-              this.client.getLogger().error(`[CommandHandler] Command ${file} has no 'name'.`)
+              Logger.error(`[CommandHandler] Command ${file} has no 'name'.`)
               continue
             }
 
             if (this.commands.has(command.getData().name)) {
-              this.client.getLogger().warn(`[CommandHandler] Command '${command.getData().name}' is already registered. Skipping.`)
+              Logger.warn(`[CommandHandler] Command '${command.getData().name}' is already registered. Skipping.`)
               continue
             }
 
@@ -64,13 +65,13 @@ export default class CommandHandler {
             this.cmds.push(command.getData().name)
 
           } catch (err) {
-            this.client.getLogger().error(`[CommandHandler] Failed to load command: ${file} - ${err}`)
+            Logger.error(`[CommandHandler] Failed to load command: ${file} - ${err}`)
             continue
           }
         }   
       }
     } catch (err) {
-      this.client.getLogger().error(`[CommandHandler] Error loading commands: ${err}`)
+      Logger.error(`[CommandHandler] Error loading commands: ${err}`)
     }
   }
 
@@ -90,13 +91,13 @@ export default class CommandHandler {
           cmds.push(cmd.getData().toJSON())
         }
       } else {
-        this.client.getLogger().error(`[CommandHandler] Invalid JSON for command: ${cmd.getData()?.name}`)
+        Logger.error(`[CommandHandler] Invalid JSON for command: ${cmd.getData()?.name}`)
       }
     }
 
     try {
       if (!this.client.isDevMode() || !this.options.dev) {
-        this.client.getLogger().info(`[CommandHandler] Registering ${cmds.length + this.cmdsPerGuilds.length} global commands.`)
+        Logger.info(`[CommandHandler] Registering ${cmds.length + this.cmdsPerGuilds.length} global commands.`)
 
         const dataGlobal: any = await this.rest.put(
           Routes.applicationCommands(this.options.CLIENT_ID),
@@ -107,9 +108,9 @@ export default class CommandHandler {
           this.registerCommandsPerGuild(guild.id)
         })
 
-        this.client.getLogger().info(`[CommandHandler] Global registration complete (${dataGlobal.length + this.cmdsPerGuilds.length} commands).`)
+        Logger.info(`[CommandHandler] Global registration complete (${dataGlobal.length + this.cmdsPerGuilds.length} commands).`)
       } else {
-        this.client.getLogger().info(`[CommandHandler] Registering ${cmds.length + this.cmdsPerGuilds.length} dev commands.`)
+        Logger.info(`[CommandHandler] Registering ${cmds.length + this.cmdsPerGuilds.length} dev commands.`)
 
         const data: any = await this.rest.put(
           Routes.applicationGuildCommands(
@@ -119,10 +120,10 @@ export default class CommandHandler {
           { body: [...cmds, ...this.cmdsPerGuilds] }
         )
 
-        this.client.getLogger().info(`[CommandHandler] Dev registration complete (${data.length} commands).`)
+        Logger.info(`[CommandHandler] Dev registration complete (${data.length} commands).`)
       }
     } catch (error) {
-      this.client.getLogger().error(`[CommandHandler] Failed to register commands: ${error}`)
+      Logger.error(`[CommandHandler] Failed to register commands: ${error}`)
     } finally {
       this.listeners()
     }
@@ -135,7 +136,7 @@ export default class CommandHandler {
         { body: this.cmdsPerGuilds }
       )
     } catch (error) {
-      this.client.getLogger().error(`[CommandHandler] Guild command registration failed for ${guildId}: ${error}`)
+      Logger.error(`[CommandHandler] Guild command registration failed for ${guildId}: ${error}`)
     }
   }
 
@@ -160,20 +161,20 @@ export default class CommandHandler {
 
       const command = this.commands.get(interaction.commandName)
       if (!command) {
-        this.client.getLogger().warn(`Command '${interaction.commandName}' not found.`)
+        Logger.warn(`Command '${interaction.commandName}' not found.`)
         return
       }
 
       try {
         await command.execute(interaction, this.client)
-        if (this.client.isDevMode()) this.client.getLogger().info(`[CommandHandler] ${interaction.user.id} executed command: ${command.getData().name}`)
+        if (this.client.isDevMode()) Logger.info(`[CommandHandler] ${interaction.user.id} executed command: ${command.getData().name}`)
         
       } catch (error) {
-        this.client.getLogger().error(`[CommandHandler] Execution error for '${command.getData().name}': ${error}`)
+        Logger.error(`[CommandHandler] Execution error for '${command.getData().name}': ${error}`)
         await interaction.reply({ content: "An error occurred while executing the command.", ephemeral: true })
       }
     } catch (err) {
-      this.client.getLogger().error(`[CommandHandler] commandExecute error: ${err}`)
+      Logger.error(`[CommandHandler] commandExecute error: ${err}`)
     }
   }
 
@@ -182,7 +183,7 @@ export default class CommandHandler {
 
     const command = this.commands.get(interaction.commandName)
     if (!command) {
-      this.client.getLogger().warn(`Autocomplete command not found: ${interaction.commandName}`)
+      Logger.warn(`Autocomplete command not found: ${interaction.commandName}`)
       return
     }
 
@@ -191,7 +192,7 @@ export default class CommandHandler {
         await command.autoComplete(interaction, this.client)
       }
     } catch (error) {
-      this.client.getLogger().error(`[CommandHandler] Autocomplete error for '${command.getData().name}': ${error}`)
+      Logger.error(`[CommandHandler] Autocomplete error for '${command.getData().name}': ${error}`)
     }
   }
 }
