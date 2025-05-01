@@ -18,6 +18,22 @@ async function main() {
             console.info('🔥 Starting server...');
             new DripcordFramework(false)
             break;
+        case 'build':
+            console.info('🔨  Building Discord bot...');
+            const buildProcess = spawn('tsc', ['--build'], {
+                stdio: 'inherit',
+                shell: true
+            });
+
+            buildProcess.on('close', (code) => {
+                if (code !== 0) {
+                    console.error(`❌  Build failed with code ${code}`);
+                } else {
+                    console.info('✅  Build completed successfully!');
+                }
+            });
+            break;
+
         case 'lint':
             console.info('🧹 Running Biome linter...');
             const lintProcess = spawn('npx', ['biome', 'check', '.'], {
@@ -71,24 +87,28 @@ async function main() {
 
 
             fs.writeFileSync(path.join(srcDir, 'commands', `ping.${ext}`),
-                `import { Command, SlashCommandBuilder } from "dripcord";
+                `import { Command } from "dripcord";
+import { ${ useTS ? "ChatInputCommandInteraction, " : ""}SlashCommandBuilder } from 'discord.js';
 
 export default class Ping extends Command {
-    data = new SlashCommandBuilder().setName("ping").setDescription("Ping i pong")
+    constructor() {
+        super(new SlashCommandBuilder().setName("ping"), false)
+    }
 
-    async execute(i) {
+    async execute(i${useTS ? ": ChatInputCommandInteraction" : ""}) {
         await i.reply("Pong!")
     }
 };`);
 
             fs.writeFileSync(path.join(srcDir, 'events', `ready.${ext}`),
-                `import { Event, Events } from "dripcord"
+                `import { Event } from "dripcord"
+import { Events, Client } from 'discord.js'
 
 export default class ClientEvent extends Event {
     constructor() {
         super(Events.ClientReady, true)
     }
-    async execute(client) {
+    async execute(client${useTS ?": Client" : ""}) {
         console.log("Bot has started")
     }
 }`);
@@ -104,9 +124,9 @@ export default {
   },
   cache: new LocalCacheDriver(),
   database: new SQLiteDatabaseDriver(),
-  eventsDir: "./events",
-  commandsDir: "./commands",
-  pluginsDir: "./plugins",
+  eventsDir: "./${useTS ? "dist/" : ""}events",
+  commandsDir: "./${useTS ? "dist/" : ""}commands",
+  pluginsDir: "./${useTS ? "dist/" : ""}plugins",
   i18n: {
     default: "en",
     locales: ["en"]
@@ -134,7 +154,7 @@ CLIENT_ID=client-id-here
       "compilerOptions": {
         "target": "ES2020",
         "module": "ESNext",
-        "moduleResolution": "Node",
+        "moduleResolution": "bundler",
         "esModuleInterop": true,
         "outDir": "dist",
         "rootDir": "src",
@@ -150,12 +170,27 @@ initShard()`)
             }
 
             console.info(chalk.yellow('📦 Running npm init...'));
-            spawn('npm', ['init', '-y'], {cwd: projectRoot, stdio: 'inherit', shell: true});
+            fs.writeFileSync(path.join(projectRoot, 'package.json'), `
+{
+  "name": "${answers.projectName}",
+  "version": "1.0.0",
+  "main": "config.js",
+  "scripts": {
+    "start": "dripcord start",
+    "dev": "dripcord dev",
+    ${useTS ? '"build": "dripcord build",' : ''}
+    "lint": "dripcord lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}`)
 
             await new Promise(resolve => setTimeout(resolve, 1000));
 
             console.info(chalk.yellow('📦 Installing dependencies...'));
-            spawn('npm', ['install', 'dripcord', 'discord.js'], {cwd: projectRoot, stdio: 'inherit', shell: true});
+            spawn('npm', ['install', 'dripcord', 'discord.js@14.19.2'], {cwd: projectRoot, stdio: 'inherit', shell: true});
 
             const devDeps = ['@biomejs/biome'];
             if (useTS) devDeps.push('typescript');
@@ -168,7 +203,7 @@ initShard()`)
             break;
         default:
             console.info(`❓ Unknown command: ${command}`);
-            console.info('Available commands: dev, start, lint, init');
+            console.info('Available commands: dev, start, build, lint, init');
     }
 }
 main()

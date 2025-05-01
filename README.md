@@ -103,7 +103,7 @@ import { Command, SlashCommandBuilder } from "dripcord";
 
 export default class PingCommand extends Command {
   constructor() {
-    super(new SlashCommandBuilder(), true, 5); // SlashCommandBuilder data, perGuild boolean option, cooldown (optional)
+    super(new SlashCommandBuilder().setName("ping"), true, 5); // SlashCommandBuilder data, perGuild boolean option, cooldown (optional)
   }
 
   async run(interaction) {
