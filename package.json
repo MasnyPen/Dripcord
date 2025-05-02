@@ -1,6 +1,6 @@
 {
   "name": "dripcord",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "",
   "bin": {
     "dripcord": "./dist/bin/dripcord.js"
@@ -39,6 +39,7 @@
   "homepage": "https://github.com/MasnyPen/Dripcord#readme",
   "dependencies": {
     "chalk": "^5.4.1",
+    "chokidar": "^4.0.3",
     "discord.js": "^14.19.2",
     "dotenv": "^16.5.0",
     "i18n": "^0.15.1",

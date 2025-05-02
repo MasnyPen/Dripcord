@@ -12,7 +12,7 @@ export class DripcordFramework {
     private ConfigLoader = new ConfigLoader()
 
     public isClient() {
-        return this.client;
+        return this.client != undefined;
     }
 
     public getClient() {
@@ -20,7 +20,7 @@ export class DripcordFramework {
     }
 
     public isManager() {
-        return this.manager;
+        return this.manager != undefined;
     }
     public getManager() {
         return this.manager;
@@ -64,6 +64,13 @@ export class DripcordFramework {
         await this.manager!.spawn();
 
         Logger.info(`[CLIENT] ${this.manager!.totalShards} shard(s) spawned.`);
+    }
+    public async end() {
+        if (this.isClient()) {
+            this.client!.destroy()
+        } else if (this.isManager()) {
+            this.manager!.shards.map(shard => shard.kill());
+        }
     }
 }
 

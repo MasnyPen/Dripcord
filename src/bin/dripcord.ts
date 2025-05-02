@@ -6,13 +6,21 @@ import path from "path";
 import chalk from "chalk";
 import inquirer from "inquirer";
 import {DripcordFramework} from "../DripcordFramework.js";
+import chokidar from 'chokidar';
 
 const [,, command] = process.argv;
 async function main() {
     switch (command) {
         case 'dev':
             console.info('🚀 Starting dev server...');
-            new DripcordFramework(true)
+
+            let child = new DripcordFramework(true)
+            const watcher = chokidar.watch('src', { ignoreInitial: true });
+            watcher.on('all', (event, path) => {
+                console.log(`🔄 ${event} detected at ${path}, restarting…`);
+                child.end();
+                child = new DripcordFramework(true);
+            });
             break;
         case 'start':
             console.info('🔥 Starting server...');
@@ -124,9 +132,9 @@ export default {
   },
   cache: new LocalCacheDriver(),
   database: new SQLiteDatabaseDriver(),
-  eventsDir: "./${useTS ? "dist/" : ""}events",
-  commandsDir: "./${useTS ? "dist/" : ""}commands",
-  pluginsDir: "./${useTS ? "dist/" : ""}plugins",
+  eventsDir: "./${useTS ? "dist/" : "src/"}events",
+  commandsDir: "./${useTS ? "dist/" : "src/"}commands",
+  pluginsDir: "./${useTS ? "dist/" : "src/"}plugins",
   i18n: {
     default: "en",
     locales: ["en"]
