@@ -96,7 +96,7 @@ export default {
 
 ## ⚙️ Commands
 
-Easily register slash commands using the built-in handler:
+Easily register slash commands (and context menu commands) using the built-in handler:
 
 ```ts
 import { SlashCommandBuilder } from "discord.js";
@@ -104,7 +104,7 @@ import { Command } from "dripcord";
 
 export default class PingCommand extends Command {
   constructor() {
-    super(new SlashCommandBuilder().setName("ping"), true, 5); // SlashCommandBuilder data, perGuild boolean option, cooldown (optional)
+    super(new SlashCommandBuilder().setName("ping"), true, 5); // SlashCommandBuilder/ContextMenuCommandBuilder data, perGuild boolean option, cooldown (optional)
   }
 
   async run(interaction) {

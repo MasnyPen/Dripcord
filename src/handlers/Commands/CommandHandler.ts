@@ -81,10 +81,6 @@ export default class CommandHandler {
 
     for (const cmd of this.commands.values()) {
       if (cmd.getData() && typeof cmd.getData().toJSON === "function") {
-        if (!cmd.getData().description && !(cmd.getData() instanceof ContextMenuCommandBuilder)) {
-          cmd.getData().setDescription("Brak Opisu")
-        }
-
         if (cmd.isPerGuild()) {
           this.cmdsPerGuilds.push(cmd.getData().toJSON())
         } else {
