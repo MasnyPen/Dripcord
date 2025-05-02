@@ -6,7 +6,7 @@ import {SQLiteDatabaseDriver} from "../drivers/database/SqliteDriver.js";
 
 export default class ConfigLoader {
     private configPath = path.join(process.cwd(), "config.js");
-    private static config: Config
+    private static config: Config | null = null
 
     async load(): Promise<Config> {
         try {
@@ -20,7 +20,7 @@ export default class ConfigLoader {
 
             const module = await import(this.configPath);
             ConfigLoader.config = module.default;
-            return ConfigLoader.config;
+            return ConfigLoader.config!;
         } catch (error) {
             console.error("❌  Failed to load config.js:", error);
             this.writeDefaultConfigFile();
