@@ -99,7 +99,8 @@ export default {
 Easily register slash commands using the built-in handler:
 
 ```ts
-import { Command, SlashCommandBuilder } from "dripcord";
+import { SlashCommandBuilder } from "discord.js";
+import { Command } from "dripcord";
 
 export default class PingCommand extends Command {
   constructor() {
@@ -119,16 +120,16 @@ export default class PingCommand extends Command {
 Define client event listeners like this:
 
 ```ts
-import { Event, Events } from "dripcord";
+import { Events } from "discord.js"
+import { Event, Logger } from "dripcord"
 
-export default class ReadyEvent extends Event {
-  constructor() {
-    super(Events.ClientReady, true);
-  }
-
-  async execute(client) {
-    client.getLogger().info("Bot is ready!");
-  }
+export default class ClientEvent extends Event {
+    constructor() {
+        super(Events.ClientReady, true)
+    }
+    async execute(client) {
+        Logger.info("Bot has started")
+    }
 }
 ```
 
@@ -140,7 +141,7 @@ Dripcord natively supports sharding through discord.js’s ShardingManager.
 <br>When enabled, it allows your bot to scale horizontally across multiple processes
 
 ```js
-// shard.js
+// shard.js - help file for sharding
 import { initShard } from 'dripcord'
 initShard()
 ```
@@ -199,7 +200,7 @@ With i18n you can easily manage languages.
 ```ts
 import { Translate } from "dripcord";
 
-Translate("command.success", { user: "John" });
+Translate("en", "command.success", { user: "John" });
 ```
 
 ---
