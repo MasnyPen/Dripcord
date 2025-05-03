@@ -14,7 +14,7 @@ import {Logger} from "../../utils/Logger.js";
 
 export default class CommandHandler {
   private cmds: string[] = []
-  private commands: Collection<string, Command> = new Collection()
+  private commands: Collection<string, Command<any, any>> = new Collection()
   private rest: REST
   private cmdsPerGuilds: any[] = []
 
@@ -25,25 +25,32 @@ export default class CommandHandler {
   ) {
     this.rest = new REST().setToken(this.options.TOKEN)
     this.registerCommands()
+
+    // Register per guild commands
+    client.on("ready", () => {
+      this.client.guilds.cache.forEach(guild => {
+        this.registerCommandsPerGuild(guild.id)
+      })
+
+    })
   }
 
   private async loadCommands(dir: string): Promise<void> {
     try {
-      const commandsDir = path.join(process.cwd(), dir)
 
-      if (!fs.existsSync(commandsDir)) return
+      if (!fs.existsSync(dir)) return
 
       const files = fs.readdirSync(dir)
 
       for (const file of files) {
-        const filePath = path.join(commandsDir, file)
+        const filePath = path.join(dir, file)
 
         if (fs.statSync(filePath).isDirectory()) {
-          this.loadCommands(path.join(commandsDir, file))
+          await this.loadCommands(filePath)
         } else if (file.endsWith(".js")) {
           try {
             const instance = await import(filePath).then(res => res.default)
-            const command: Command = new instance()
+            const command: Command<any, any> = new instance()
 
             if (!command?.getData() || typeof command.execute !== "function") {
               Logger.error(`[CommandHandler] Command ${file} is missing 'data' or 'execute'.`)
@@ -75,7 +82,7 @@ export default class CommandHandler {
   }
 
   private async registerCommands(): Promise<void> {
-    await this.loadCommands(this.commandsPath)
+    await this.loadCommands(path.join(process.cwd(), this.commandsPath))
     const cmds = []
 
     for (const cmd of this.commands.values()) {
@@ -98,11 +105,6 @@ export default class CommandHandler {
           Routes.applicationCommands(this.options.CLIENT_ID),
           { body: cmds }
         )
-
-        this.client.guilds.cache.forEach(guild => {
-          this.registerCommandsPerGuild(guild.id)
-        })
-
         Logger.info(`[CommandHandler] Global registration complete (${dataGlobal.length + this.cmdsPerGuilds.length} commands).`)
       } else {
         Logger.info(`[CommandHandler] Registering ${cmds.length + this.cmdsPerGuilds.length} dev commands.`)

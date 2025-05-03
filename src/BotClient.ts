@@ -100,8 +100,10 @@ export default class BotClient extends Client implements Bot {
     // i18n
     initI18n(this, this.config.i18n.default, this.config.i18n.locales)
 
-    // Modules resolve
-    await this.resolveModules()
+    // Handlers
+    this.eventHandler = new EventHandler(this, this.config.eventsDir)
+    this.commandHandler = new CommandHandler(this, this.config.commandsDir, this.secretConfig)
+    this.pluginManager = new PluginManager(this)
 
     // Cache
     Logger.info("[CACHE] Connecting to cache...")
@@ -141,17 +143,6 @@ export default class BotClient extends Client implements Bot {
   async end(code = 0) {
     this.pluginManager.shutdown()
     process.exit(code)
-  }
-
-  /**
-      Resolves Modules
-  */
-  private async resolveModules() {
-
-    // Handlers
-    this.eventHandler = new EventHandler(this, this.config.eventsDir)
-    this.commandHandler = new CommandHandler(this, this.config.commandsDir, this.secretConfig)
-    this.pluginManager = new PluginManager(this)
   }
 }
 

@@ -22,7 +22,7 @@ class EventHandler {
       const filePath = path.join(eventsDir, file)
 
       if (fs.statSync(filePath).isDirectory()) {
-        this.loadEvents(path.join(eventsDir, file))
+        await this.loadEvents(filePath)
       } else if (file.endsWith(".js")) {
         try {
           const mod = await import(filePath)

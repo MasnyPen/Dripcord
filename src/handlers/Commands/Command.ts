@@ -1,29 +1,21 @@
 import {
   SlashCommandBuilder,
   ContextMenuCommandBuilder,
+  AutocompleteInteraction,
+  CommandInteraction,
   SlashCommandOptionsOnlyBuilder,
   SlashCommandSubcommandsOnlyBuilder,
-  AutocompleteInteraction,
-  ChatInputCommandInteraction,
-  MessageContextMenuCommandInteraction,
-  UserContextMenuCommandInteraction,
 } from "discord.js"
 import {Bot} from "../../interfaces/Bot.js";
-
+type commandBuilder = SlashCommandBuilder
+    | ContextMenuCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder
 export abstract class Command<
-  T extends
-    | { name: string }
-    | SlashCommandBuilder
-    | SlashCommandSubcommandsOnlyBuilder
-    | SlashCommandOptionsOnlyBuilder
-    | ContextMenuCommandBuilder = SlashCommandBuilder
+  T extends commandBuilder,
+  U extends CommandInteraction
 > {
 
   private commandCooldowns = new Map<string, Map<string, number>>()
-  private interaction!:
-    | UserContextMenuCommandInteraction
-    | MessageContextMenuCommandInteraction
-    | ChatInputCommandInteraction
+  private interaction!: U
 
   private client!: Bot
   getClient() { return this.client}
@@ -32,11 +24,7 @@ export abstract class Command<
     const originalExecute = this.execute
     this.execute = async function (
       ...args: [
-        (
-          | UserContextMenuCommandInteraction
-          | MessageContextMenuCommandInteraction
-          | ChatInputCommandInteraction
-        ),
+        U,
         Bot
       ]
     ) {
@@ -62,10 +50,7 @@ export abstract class Command<
   }
 
   public abstract execute(
-    event:
-      | UserContextMenuCommandInteraction
-      | MessageContextMenuCommandInteraction
-      | ChatInputCommandInteraction,
+    event: U,
     client?: Bot,
     args?: string[]
   ): void | Promise<void>

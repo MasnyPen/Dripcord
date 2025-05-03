@@ -7,6 +7,7 @@ import chalk from "chalk";
 import inquirer from "inquirer";
 import {DripcordFramework} from "../DripcordFramework.js";
 import chokidar from 'chokidar';
+import {rm} from "node:fs/promises";
 
 const [,, command] = process.argv;
 async function main() {
@@ -16,9 +17,10 @@ async function main() {
 
             let child = new DripcordFramework(true)
             const watcher = chokidar.watch('src', { ignoreInitial: true });
-            watcher.on('all', (event, path) => {
+            watcher.on('all', async (event, path) => {
                 console.log(`🔄 ${event} detected at ${path}, restarting…`);
                 child.end();
+                await build()
                 child = new DripcordFramework(true);
             });
             break;
@@ -27,21 +29,8 @@ async function main() {
             new DripcordFramework(false)
             break;
         case 'build':
-            console.info('🔨  Building Discord bot...');
-            const buildProcess = spawn('tsc', ['--build'], {
-                stdio: 'inherit',
-                shell: true
-            });
-
-            buildProcess.on('close', (code) => {
-                if (code !== 0) {
-                    console.error(`❌  Build failed with code ${code}`);
-                } else {
-                    console.info('✅  Build completed successfully!');
-                }
-            });
+            await build()
             break;
-
         case 'lint':
             console.info('🧹 Running Biome linter...');
             const lintProcess = spawn('npx', ['biome', 'check', '.'], {
@@ -213,3 +202,22 @@ initShard()`)
     }
 }
 main()
+
+async function build() {
+    if (!fs.existsSync("tsconfig.json")) return
+    console.info('🔨  Building Discord bot...');
+    await rm(path.join(process.cwd(), "dist"), { recursive: true, force: true });
+    const buildProcess = spawn('tsc', ['--build'], {
+        stdio: 'inherit',
+        shell: true
+    });
+
+    buildProcess.on('close', (code) => {
+        if (code !== 0) {
+            console.error(`❌  Build failed with code ${code}`);
+            process.exit()
+        } else {
+            console.info('✅  Build completed successfully!');
+        }
+    });
+}
