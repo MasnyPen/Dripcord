@@ -81,11 +81,9 @@ async function main() {
             const ext = useTS ? 'ts' : 'js';
 
             const projectRoot = path.resolve(process.cwd(), answers.projectName);
-            if (fs.existsSync(projectRoot)) {
-                console.error(chalk.red('❗ Project folder already exists.'));
-                process.exit(1);
+            if (!fs.existsSync(projectRoot)) {
+                fs.mkdirSync(projectRoot);
             }
-            fs.mkdirSync(projectRoot);
 
             const srcDir = path.join(projectRoot, 'src');
             fs.mkdirSync(srcDir, {recursive: true});

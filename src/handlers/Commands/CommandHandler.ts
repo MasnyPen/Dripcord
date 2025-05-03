@@ -3,7 +3,6 @@ import {
   REST,
   Routes,
   Events,
-  ContextMenuCommandBuilder,
   Interaction,
 } from "discord.js"
 import path from "path"
@@ -11,7 +10,7 @@ import fs from "fs"
 import { Command } from "./Command.js"
 import BotClient from "../../BotClient.js"
 import {SecretConfig} from "../../interfaces/Config.js";
-import {Logger} from "../../utils/Logger";
+import {Logger} from "../../utils/Logger.js";
 
 export default class CommandHandler {
   private cmds: string[] = []

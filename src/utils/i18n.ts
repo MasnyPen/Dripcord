@@ -1,6 +1,6 @@
 import i18n from 'i18n';
-import {Bot} from "../interfaces/Bot";
-import {Logger} from "./Logger";
+import {Bot} from "../interfaces/Bot.js";
+import {Logger} from "./Logger.js";
 
 export function initI18n(client: Bot, defaultLanguage: string = "en", locales: string[] = ["en"]) {
     i18n.configure({

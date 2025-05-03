@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { Logger } from "./Logger";
+import { Logger } from "./Logger.js";
 
 export default {
   init: (): void => {

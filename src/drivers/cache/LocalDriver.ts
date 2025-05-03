@@ -1,4 +1,4 @@
-import { CacheDriver } from "./CacheDriver";
+import { CacheDriver } from "./CacheDriver.js";
 
 interface CacheEntry<T> {
     value: T;

@@ -2,7 +2,7 @@ import BotClient from "../BotClient.js";
 import path from "path";
 import fs from "fs";
 import { Plugin } from '../interfaces/Plugin.js'
-import {Logger} from "../utils/Logger";
+import {Logger} from "../utils/Logger.js";
 
 export default class PluginManager {
     private plugins: Plugin[] = []
