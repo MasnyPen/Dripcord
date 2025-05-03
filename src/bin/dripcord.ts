@@ -47,7 +47,6 @@ async function main() {
             });
             break;
         case 'init':
-            console.info(chalk.blue('🛠  Dripcord Init - Starting...'));
 
             const answers = await inquirer.prompt([
                 {type: "input", name: "projectName", message: "📛 Project name:", default: "dripcord-bot"},
@@ -63,8 +62,32 @@ async function main() {
                     name: "useSharding",
                     message: "🧩 Enable sharding?",
                     default: false
+                },
+                {
+                    type: "input",
+                    name: "token",
+                    message: "🔑 Enter your Discord Token:",
+                    required: true
+                },
+                {
+                    type: "input",
+                    name: "client_id",
+                    message: "🆔 Enter your Discord Client ID:",
+                    required: true
                 }
             ]);
+            console.log(chalk.cyanBright(`
+   ⚡ DRIPCORD INITIALIZER INTERFACE ⚡ 
+  
+   🧠 Neural mesh online
+   🔗 Core modules linked
+   🔐 AUTH.TKN injected securely
+   🆔 CLIENT_ID synced to grid
+   
+   🧬 Language: ${answers.language.padEnd(30)}
+   🧩 Sharding: ${answers.useSharding ? "ENABLED".padEnd(30) : "DISABLED".padEnd(30)}
+`))
+
 
             const useTS = answers.language === 'TypeScript';
             const ext = useTS ? 'ts' : 'js';
@@ -132,6 +155,24 @@ export default {
   }
 };`);
 
+            fs.writeFileSync(path.join(projectRoot, ".gitignore"), `
+temp
+logs
+dist
+node_modules
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+.env
+package-lock.json
+yarn.lock
+
+            `);
+
             fs.writeFileSync(path.join(projectRoot, '.env'),
                 `TOKEN=your-bot-token-here
 CLIENT_ID=client-id-here
@@ -163,6 +204,24 @@ CLIENT_ID=client-id-here
                     `import { initShard } from 'dripcord'
 initShard()`)
             }
+            fs.writeFileSync(path.join(projectRoot, ".env"), `
+# Production credentials
+TOKEN=${answers.token}
+CLIENT_ID=${answers.client_id}
+
+# OPTIONAL
+# Production credentials
+CLIENT_SECRET=your_bot_client_secret_here
+PUBLIC_KEY=your_bot_public_key_here
+REDIRECT_URI=https://yourdomain.com/redirect
+
+# Development credentials
+DEV_TOKEN=your_dev_bot_token_here
+DEV_CLIENT_ID=your_dev_bot_client_id_here
+DEV_CLIENT_SECRET=your_dev_bot_client_secret_here
+DEV_PUBLIC_KEY=your_dev_bot_public_key_here
+DEV_REDIRECT_URI=https://yourdomain.com/dev-redirect
+DEV_GUILD_ID=your_dev_guild_id_here`)
 
             console.info(chalk.yellow('📦 Running npm init...'));
             fs.writeFileSync(path.join(projectRoot, 'package.json'), `
