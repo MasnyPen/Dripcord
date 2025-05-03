@@ -3,6 +3,7 @@ import EventHandler from "../handlers/Event/EventHandler";
 import CommandHandler from "../handlers/Commands/CommandHandler";
 import PluginManager from "../managers/PluginManager";
 import { Client } from 'discord.js'
+import {DatabaseDriver} from "../drivers/database/DatabaseDriver";
 
 export interface Bot extends Client {
 
@@ -14,6 +15,7 @@ export interface Bot extends Client {
     getCache(): CacheDriver
 
     // DATABASES
+    getDatabase(): DatabaseDriver
 
     // HANDLERS
     getEventHandler(): EventHandler
