@@ -8,7 +8,7 @@ export enum DripcordEvents {
 export abstract class Event {
     public name: string;
     public once?: boolean;
-    private client: Bot | null = null
+    private client!: Bot
 
     constructor(name: Events, once = false) {
         this.name = name;
