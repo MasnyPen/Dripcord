@@ -5,6 +5,7 @@ import {
   CommandInteraction,
   SlashCommandOptionsOnlyBuilder,
   SlashCommandSubcommandsOnlyBuilder,
+  MessageFlags
 } from "discord.js"
 import {Bot} from "../../interfaces/Bot.js";
 type commandBuilder = SlashCommandBuilder
@@ -83,7 +84,7 @@ export abstract class Command<
           content: `Please wait ${Math.ceil(
             (expirationTime - timeNow) / 1000
           )} seconds.`,
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral
         })
         return true
       } else {
