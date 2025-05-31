@@ -1,17 +1,11 @@
 {
-  "name": "dripcord",
-  "version": "1.5.1",
-  "description": "",
-  "bin": {
-    "dripcord": "./dist/bin/dripcord.js"
+  "private": true,
+  "scripts": {
+    "lint": "npx @biomejs/biome lint --write src"
   },
-  "main": "./dist/exports/cjs/index.cjs",
-  "module": "./dist/exports/esm/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/exports/esm/index.js",
-      "require": "./dist/exports/cjs/index.js"
-    }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MasnyPen/Dripcord.git"
   },
   "keywords": [
     "discord",
@@ -22,39 +16,25 @@
     "discordapp",
     "framework"
   ],
-  "scripts": {
-    "clean": "node scripts/clean.js",
-    "build": "npm run clean && tsc && tsc --project tsconfig.cjs.json",
-    "lint": "npx @biomejs/biome lint --write ./src"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MasnyPen/Dripcord.git"
-  },
   "author": "MasnyPen",
   "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/MasnyPen/Dripcord/issues"
   },
   "homepage": "https://github.com/MasnyPen/Dripcord#readme",
-  "dependencies": {
-    "chalk": "^5.4.1",
-    "chokidar": "^4.0.3",
-    "discord.js": "^14.19.2",
-    "dotenv": "^16.5.0",
-    "i18n": "^0.15.1",
-    "inquirer": "^12.6.0",
-    "lavalink-client": "^2.5.1",
-    "mysql2": "^3.14.0",
-    "redis": "^4.7.0",
-    "sqlite3": "^5.1.7",
-    "winston": "^3.17.0",
-    "winston-daily-rotate-file": "^5.0.0"
-  },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/i18n": "^0.13.12",
     "@types/node": "^22.14.0",
     "typescript": "^5.8.3"
-  }
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "packageManager": "npm@11.4.0",
+  "workspaces": [
+    "packages/dripcord",
+    "packages/dripcord"
+  ]
 }

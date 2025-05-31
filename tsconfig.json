@@ -1,19 +1,7 @@
 {
-  "compilerOptions": {
-    "outDir": "./dist",
-    "module": "ESNext",
-    "target": "ES2022",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "declaration": true,
-    "declarationDir": "./dist",
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "resolveJsonModule": true,
-    "removeComments": false
-  },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "files": [],
+  "references": [
+    { "path": "./packages/dripcord" },
+    { "path": "./packages/observo" }
+  ]
 }
