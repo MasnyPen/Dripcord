@@ -1,6 +1,6 @@
 {
   "name": "dripcord",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "Discord bot framework",
   "bin": {
     "dripcord": "../../dist/bin/dripcord.js"
@@ -10,7 +10,8 @@
   "exports": {
     ".": {
       "import": "./dist/exports/esm/index.js",
-      "require": "./dist/exports/cjs/index.js"
+      "require": "./dist/exports/cjs/index.js",
+      "types": "./dist/exports/esm/index.d.ts"
     }
   },
   "author": "MasnyPen",
