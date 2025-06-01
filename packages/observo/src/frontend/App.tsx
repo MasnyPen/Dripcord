@@ -1,23 +1,19 @@
-import React, { useEffect, useState } from 'react';
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Sidebar from './components/Sidebar';
+import Dashboard from './pages/DashBoard';
 function App() {
-    const [metrics, setMetrics] = useState<{cpu: number; memory: number} | null>(null);
-
-    useEffect(() => {
-        fetch('/api/metrics')
-            .then(res => res.json())
-            .then(data => setMetrics(data));
-    }, []);
-
-    if (!metrics) return <div>Loading metrics...</div>;
-
-    return (
-        <div>
-            <h1>Webpanel metryk</h1>
-            <p>CPU: {metrics.cpu}%</p>
-            <p>Memory: {metrics.memory}%</p>
-        </div>
-    );
+  return (
+    <BrowserRouter>
+      <div className="flex h-screen">
+        <Sidebar />
+        <main className="flex-1 p-6 overflow-y-auto bg-gray-100">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+          </Routes>
+        </main>
+      </div>
+    </BrowserRouter>
+  );
 }
 
 export default App;
