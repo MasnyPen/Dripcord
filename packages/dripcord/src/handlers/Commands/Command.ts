@@ -52,10 +52,13 @@ export abstract class Command<
 
   public abstract execute(
     event: U,
-    client?: Bot,
-    args?: string[]
-  ): void | Promise<void>
-  autoComplete?(
+    client: Bot,
+  ): Promise<void>
+
+  public abstract runOnError(event: U, client: Bot): Promise<void>
+
+
+  public abstract autoComplete(
     interaction: AutocompleteInteraction,
     client?: Bot
   ): void | Promise<void>

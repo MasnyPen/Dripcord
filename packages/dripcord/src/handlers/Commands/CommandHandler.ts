@@ -168,7 +168,7 @@ export default class CommandHandler {
         
       } catch (error) {
         Logger.error(`[CommandHandler] Execution error for '${command.getData().name}': ${error}`)
-        await interaction.reply({ content: "An error occurred while executing the command.", ephemeral: true })
+        await command.runOnError(interaction, this.client)
       }
     } catch (err) {
       Logger.error(`[CommandHandler] commandExecute error: ${err}`)

@@ -107,8 +107,16 @@ export default class PingCommand extends Command {
     super(new SlashCommandBuilder().setName("ping"), true, 5); // SlashCommandBuilder/ContextMenuCommandBuilder data, perGuild boolean option, cooldown (optional)
   }
 
-  async run(interaction) {
-    interaction.reply("🏓 Pong!");
+  async execute(interaction, client) {
+    await interaction.reply("🏓 Pong!");
+  }
+
+  async runOnError(interaction, client) {
+    await interaction.reply({ content: "An error occurred while executing the command.", ephemeral: true });
+  }
+
+  autoComplete(interaction, client) {
+    return;
   }
 }
 ```

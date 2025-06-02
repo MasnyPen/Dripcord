@@ -105,7 +105,7 @@ async function main() {
 
 
             fs.writeFileSync(path.join(srcDir, 'commands', `ping.${ext}`),
-                `import { Command } from "dripcord";
+                `import { Command, Bot } from "dripcord";
 import { ${ useTS ? "ChatInputCommandInteraction, " : ""}SlashCommandBuilder } from 'discord.js';
 
 export default class Ping extends Command {
@@ -113,8 +113,16 @@ export default class Ping extends Command {
         super(new SlashCommandBuilder().setName("ping"), false)
     }
 
-    async execute(i${useTS ? ": ChatInputCommandInteraction" : ""}) {
+    async execute(i${useTS ? ": ChatInputCommandInteraction" : ""}, client${useTS ? ": Bot" : ""}) {
         await i.reply("Pong!")
+    }
+
+    async runOnError(i${useTS ? ": ChatInputCommandInteraction" : ""}, client${useTS ? ": Bot" : ""}) {
+        await interaction.reply({ content: "An error occurred while executing the command.", ephemeral: true });
+    }
+
+    autoComplete(i${useTS ? ": ChatInputCommandInteraction" : ""}, client${useTS ? ": Bot" : ""}) {
+        return;
     }
 };`);
 
