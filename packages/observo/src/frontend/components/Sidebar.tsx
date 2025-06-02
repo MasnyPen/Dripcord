@@ -12,8 +12,13 @@ import {
   ServerCog,
   HardDrive,
 } from 'lucide-react';
+import Bot from './Bot';
+import { BotStatus } from '../../shared/BotStatus';
+import { useState } from 'react';
 
 export default function Sidebar() {
+  const [bot, setBot] = useState({ img: "/discord-icon.png", name: "Dripcord Bot", presence: "W grze Minecraft", status: BotStatus.ONLINE})
+
   return (
     <aside className="w-64 bg-zinc-900 text-white p-6 flex flex-col justify-between select-none">
       <div>
@@ -36,6 +41,7 @@ export default function Sidebar() {
         <SidebarItem icon={<Bell size={18} />} label="Notification" />
         <SidebarItem icon={<LifeBuoy size={18} />} label="Support" />
         <SidebarItem icon={<Settings size={18} />} label="Settings" />
+        <Bot img={bot.img} name={bot.name} presence={bot.presence} status={bot.status}  className="mt-2"/>
       </div>
     </aside>
   );
