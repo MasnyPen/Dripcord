@@ -1,8 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "esnext",
-    "moduleResolution": "bundler",
     "outDir": "./dist",
     "rootDir": "./src",
     "lib": ["dom", "dom.iterable", "esnext"],

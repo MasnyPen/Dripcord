@@ -18,7 +18,7 @@
   "type": "module",
   "scripts": {
     "clean": "node ../../scripts/clean.js",
-    "build": "npm run clean && tsc -b && tsc --project tsconfig.cjs.json"
+    "build": "npm run clean && tsc -b"
   },
   "dependencies": {
     "chalk": "^5.4.1",

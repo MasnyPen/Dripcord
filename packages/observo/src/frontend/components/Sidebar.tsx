@@ -5,29 +5,41 @@ import {
   Settings,
   LifeBuoy,
   Telescope,
+  Logs,
+  ChartNetwork,
+  CalendarCheck,
+  Building,
+  ServerCog,
 } from 'lucide-react';
 
 export default function Sidebar() {
   return (
-    <aside className=" w-64 bg-zinc-900 text-white flex flex-col p-6">
-      <div className="flex items-center gap-2 text-3xl font-bold">
+    <aside className=" w-64 bg-zinc-900 text-white p-6 h-full flex flex-col justify-between">
+      <div className=''>
+        <div className="flex items-center gap-2 text-3xl font-bold">
         <Telescope size={24} className="text-purple-400"/>
         <span>Observo</span>
+        </div>
+        <nav className="flex flex-col gap-2 mt-8">
+          <SidebarLinkItem icon={<LayoutDashboard size={18} />} label="Dashboard" to="/" />
+          <SidebarLinkItem icon={<Logs size={18} />} label="Logs" to="/logs" />
+          <SidebarLinkItem icon={<ChartNetwork size={18} />} label="Metrics" to="/metrics" />
+          <SidebarLinkItem icon={<CalendarCheck size={18} />} label="Tasks & Scheduler" to="/tasks" />
+          <SidebarLinkItem icon={<Building size={18} />} label="Guilds" to="/guilds" />
+          <SidebarLinkItem icon={<ServerCog size={18} />} label="Managers" to="/managers"/>
+        </nav>
       </div>
-      <nav className="flex flex-col mt-2">
-        <SidebarItem icon={<LayoutDashboard size={18} />} label="Dashboard" to="/" />
-      </nav>
-
-      <div className="border-t border-zinc-700 pt-4 space-y-2">
-        <SidebarItem icon={<Bell size={18} />} label="Notification" to="/notifications" />
-        <SidebarItem icon={<LifeBuoy size={18} />} label="Support" to="/support" />
-        <SidebarItem icon={<Settings size={18} />} label="Settings" to="/settings" />
+    
+      <div className="border-t border-zinc-700">
+        <SidebarItem icon={<Bell size={18} />} label="Notification" />
+        <SidebarItem icon={<LifeBuoy size={18} />} label="Support" />
+        <SidebarItem icon={<Settings size={18} />} label="Settings" />
       </div>
     </aside>
   );
 }
 
-function SidebarItem({ icon, label, to, badge = null, highlight = false }) {
+function SidebarLinkItem({ icon, label, to, highlight = false }) {
   return (
     <NavLink
       to={to}
@@ -41,11 +53,17 @@ function SidebarItem({ icon, label, to, badge = null, highlight = false }) {
         {icon}
         <span>{label}</span>
       </div>
-      {badge && (
-        <span className="bg-purple-500 text-xs px-2 py-0.5 rounded-full text-white">
-          {badge}
-        </span>
-      )}
     </NavLink>
   );
+}
+
+function SidebarItem({ icon, label, }) {
+  return (
+    <div className="w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors hover:bg-zinc-800 hover:cursor-pointer">
+      <div className="flex items-center space-x-2">
+        {icon}
+        <span>{label}</span>
+      </div>
+    </div>
+  )
 }
