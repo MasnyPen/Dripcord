@@ -6,7 +6,7 @@ function App() {
     <BrowserRouter>
       <div className="flex h-screen">
         <Sidebar />
-        <main className="flex-1 p-6 overflow-y-auto bg-gray-100">
+        <main className="flex-1 p-6 overflow-y-auto">
           <Routes>
             <Route path="/" element={<Dashboard />} />
           </Routes>
