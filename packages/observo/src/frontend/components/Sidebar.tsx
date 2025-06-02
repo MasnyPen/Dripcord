@@ -10,12 +10,13 @@ import {
   CalendarCheck,
   Building,
   ServerCog,
+  HardDrive,
 } from 'lucide-react';
 
 export default function Sidebar() {
   return (
-    <aside className=" w-64 bg-zinc-900 text-white p-6 h-full flex flex-col justify-between">
-      <div className=''>
+    <aside className=" w-64 bg-zinc-900 text-white p-6 h-full flex flex-col justify-between select-none">
+      <div>
         <div className="flex items-center gap-2 text-3xl font-bold">
         <Telescope size={24} className="text-purple-400"/>
         <span>Observo</span>
@@ -25,6 +26,7 @@ export default function Sidebar() {
           <SidebarLinkItem icon={<Logs size={18} />} label="Logs" to="/logs" />
           <SidebarLinkItem icon={<ChartNetwork size={18} />} label="Metrics" to="/metrics" />
           <SidebarLinkItem icon={<CalendarCheck size={18} />} label="Tasks & Scheduler" to="/tasks" />
+          <SidebarLinkItem icon={<HardDrive size={18} />} label="Sharding" to="/shards" />
           <SidebarLinkItem icon={<Building size={18} />} label="Guilds" to="/guilds" />
           <SidebarLinkItem icon={<ServerCog size={18} />} label="Managers" to="/managers"/>
         </nav>
@@ -38,7 +40,6 @@ export default function Sidebar() {
     </aside>
   );
 }
-
 function SidebarLinkItem({ icon, label, to, highlight = false }) {
   return (
     <NavLink
@@ -46,7 +47,7 @@ function SidebarLinkItem({ icon, label, to, highlight = false }) {
       className={({ isActive }) =>
         `w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
           isActive ? 'bg-zinc-800' : 'hover:bg-zinc-800'
-        } ${highlight ? 'text-purple-400' : 'text-white'}`
+        }`
       }
     >
       <div className="flex items-center space-x-2">

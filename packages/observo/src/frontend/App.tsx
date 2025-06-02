@@ -7,6 +7,7 @@ import Metrics from './pages/Metrics'
 import Tasks from './pages/Tasks'
 import Guilds from './pages/Guilds'
 import Managers from './pages/Managers';
+import Shards from './pages/Shards'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/logs" element={<Logs />}/>
             <Route path="/metrics" element={<Metrics />}/>
             <Route path="/tasks" element={<Tasks />}/>
+            <Route path="/shards" element={<Shards />}/>
             <Route path="/guilds" element={<Guilds />}/>
             <Route path="/managers" element={<Managers />}/>
             <Route path="*" element={<NotFound />} />
