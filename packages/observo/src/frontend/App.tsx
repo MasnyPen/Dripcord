@@ -8,15 +8,17 @@ import Tasks from './pages/Tasks'
 import Guilds from './pages/Guilds'
 import Managers from './pages/Managers';
 import Shards from './pages/Shards'
+import Login from './pages/Login';
 
 function App() {
   return (
     <BrowserRouter>
       <div className="flex h-screen">
         <Sidebar />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 ">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/login" element={<Login />}/>
             <Route path="/logs" element={<Logs />}/>
             <Route path="/metrics" element={<Metrics />}/>
             <Route path="/tasks" element={<Tasks />}/>

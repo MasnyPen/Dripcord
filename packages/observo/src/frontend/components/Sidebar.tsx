@@ -15,7 +15,7 @@ import {
 
 export default function Sidebar() {
   return (
-    <aside className=" w-64 bg-zinc-900 text-white p-6 h-full flex flex-col justify-between select-none">
+    <aside className="w-64 bg-zinc-900 text-white p-6 flex flex-col justify-between select-none">
       <div>
         <div className="flex items-center gap-2 text-3xl font-bold">
         <Telescope size={24} className="text-purple-400"/>
