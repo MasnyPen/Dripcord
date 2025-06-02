@@ -9,7 +9,7 @@ export default function Bot({ img, name, status, presence, className }: {img: st
   };
 
   return (
-    <figure className={"flex items-center gap-3 text-sm text-white bg-gray-700 rounded-2xl p-2 font-medium " + className}>
+    <figure className={"flex items-center gap-3 text-sm text-white bg-gray-700 rounded-2xl p-2 font-medium select-none " + className}>
       <div className="relative w-10 h-10 shrink-0">
         <img
           src={img}
