@@ -40,7 +40,10 @@ export function initLogger(opts: LoggerOptions, devMode: boolean) {
           datePattern: "YYYY-MM-DD",
           zippedArchive: true,
           maxFiles: opts.maxFiles || "14d",
-          format: winston.format.json(),
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.json()
+          ),
         })
       )
     }

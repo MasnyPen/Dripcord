@@ -27,6 +27,7 @@ a:hover {
 * {
   box-sizing: border-box;
 }
+
 html {
   width: 100%;
   position: relative;
