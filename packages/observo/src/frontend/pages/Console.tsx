@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 export default function Console() {
   const [filter, setFilter] = useState("all");
-  const logEndRef = useRef(null);
+  const logEndRef = useRef<HTMLDivElement>(null);
 
 
   const logs = [

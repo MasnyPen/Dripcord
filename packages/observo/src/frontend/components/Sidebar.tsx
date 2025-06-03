@@ -40,7 +40,9 @@ export default function Sidebar() {
     
       <div className="border-t border-zinc-700">
         <SidebarItem icon={<Bell size={18} />} label="Notification" />
-        <SidebarItem icon={<LifeBuoy size={18} />} label="Support" />
+        <a href='https://github.com/MasnyPen/Dripcord' target="_blank">
+          <SidebarItem icon={<LifeBuoy size={18} />} label="Support" />
+        </a>
         <SidebarItem icon={<Settings size={18} />} label="Settings" />
         <Bot img={bot.img} name={bot.name} presence={bot.presence} status={bot.status}  className="mt-2"/>
         <div className="text-sm text-gray-600 text-center mt-2">© Dripcord 2025</div>
@@ -53,7 +55,7 @@ function SidebarLinkItem({ icon, label, to, highlight = false }) {
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors ${
+        `w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors font-medium text-[#646cff] hover:text-[#535bf2] ${
           isActive ? 'bg-zinc-800' : 'hover:bg-zinc-800'
         }`
       }
@@ -66,9 +68,9 @@ function SidebarLinkItem({ icon, label, to, highlight = false }) {
   );
 }
 
-function SidebarItem({ icon, label, }) {
+function SidebarItem({ icon, label}) {
   return (
-    <div className="w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors hover:bg-zinc-800 hover:cursor-pointer">
+    <div className="w-full flex items-center justify-between px-3 py-2 rounded-lg transition-colors hover:bg-zinc-800 hover:cursor-pointer text-white hover:text-gray-300">
       <div className="flex items-center space-x-2">
         {icon}
         <span>{label}</span>
