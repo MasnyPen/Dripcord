@@ -1,8 +1,10 @@
 import { CircleStop, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Console() {
   const [filter, setFilter] = useState("all");
+  const logEndRef = useRef(null);
+
 
   const logs = [
     { level: "info", timestamp: "2025-06-02T12:01:22Z", message: "Bot started successfully." },
@@ -15,100 +17,16 @@ export default function Console() {
     { level: "info", timestamp: "2025-06-02T12:03:34Z", message: "Stats returned for 128 guilds, 5 shards" },
     { level: "error", timestamp: "2025-06-02T12:04:10Z", message: "Failed to fetch user data." },
     { level: "warn", timestamp: "2025-06-02T12:04:42Z", message: "Shard 2 disconnected unexpectedly." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." }
-    ,
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." }
-    ,
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." }
-    ,
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." },
-    { level: "info", timestamp: "2025-06-02T12:05:00Z", message: "Shard 2 reconnected successfully." }
+    { level: "warn", timestamp: "2025-06-02T12:03:14Z", message: "API latency spike detected (312ms)" }
   ];
-
   const filteredLogs = logs.filter(log => {
     const matchesFilter = filter === "all" || log.level === filter;
     return matchesFilter;
   });
+
+  useEffect(() => {
+  logEndRef.current?.scrollIntoView({ behavior: "smooth" });
+}, [filteredLogs]);
 
   return (
       <section className="m-4 p-4 bg-zinc-900 rounded-2xl flex flex-col overflow-hidden relative">
@@ -135,6 +53,7 @@ export default function Console() {
             {filteredLogs.map((log, index) => (
             <Log key={index} level={log.level} timestamp={log.timestamp} message={log.message} />
           ))}
+            <div ref={logEndRef} />
           </div>
           <form>
             <input
