@@ -14,11 +14,8 @@ import {
   SquareChevronRight,
 } from 'lucide-react';
 import Bot from './Bot';
-import { BotStatus } from '../../shared/BotStatus';
-import { useState } from 'react';
 
 export default function Sidebar() {
-  const [bot, setBot] = useState({ img: "/discord-icon.png", name: "Dripcord Bot", presence: "W grze Minecraft", status: BotStatus.ONLINE})
 
   return (
     <aside className="w-64 bg-zinc-900 text-white p-6 flex flex-col justify-between select-none overflow-hidden">
@@ -44,7 +41,7 @@ export default function Sidebar() {
           <SidebarItem icon={<LifeBuoy size={18} />} label="Support" />
         </a>
         <SidebarItem icon={<Settings size={18} />} label="Settings" />
-        <Bot img={bot.img} name={bot.name} presence={bot.presence} status={bot.status}  className="mt-2"/>
+        <Bot className="mt-2"/>
         <div className="text-sm text-gray-600 text-center mt-2">© Dripcord 2025</div>
       </div>
     </aside>
