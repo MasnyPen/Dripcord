@@ -14,14 +14,15 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "chart.js": "^4.4.9",
     "dripcord": "^1.5.2",
     "express": "^5.1.0",
     "framer-motion": "^12.15.0",
     "lucide-react": "^0.511.0",
     "react": "^19.1.0",
+    "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.1",
+    "recharts": "^2.15.3",
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
